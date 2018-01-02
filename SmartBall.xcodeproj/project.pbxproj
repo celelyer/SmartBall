@@ -12,6 +12,8 @@
 		A56FAC561FFBC4D300BD1796 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A56FAC541FFBC4D300BD1796 /* Main.storyboard */; };
 		A56FAC581FFBC4D300BD1796 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A56FAC571FFBC4D300BD1796 /* Assets.xcassets */; };
 		A56FAC5B1FFBC4D300BD1796 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A56FAC591FFBC4D300BD1796 /* LaunchScreen.storyboard */; };
+		A56FAC641FFBC5B400BD1796 /* SpriteKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A56FAC631FFBC5B400BD1796 /* SpriteKit.framework */; };
+		A56FAC661FFBC69900BD1796 /* GameScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = A56FAC651FFBC69900BD1796 /* GameScene.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -22,6 +24,8 @@
 		A56FAC571FFBC4D300BD1796 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		A56FAC5A1FFBC4D300BD1796 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		A56FAC5C1FFBC4D300BD1796 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		A56FAC631FFBC5B400BD1796 /* SpriteKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SpriteKit.framework; path = System/Library/Frameworks/SpriteKit.framework; sourceTree = SDKROOT; };
+		A56FAC651FFBC69900BD1796 /* GameScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameScene.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -29,6 +33,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A56FAC641FFBC5B400BD1796 /* SpriteKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -40,6 +45,7 @@
 			children = (
 				A56FAC4F1FFBC4D300BD1796 /* SmartBall */,
 				A56FAC4E1FFBC4D300BD1796 /* Products */,
+				A56FAC621FFBC5B300BD1796 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -58,10 +64,19 @@
 				A56FAC521FFBC4D300BD1796 /* ViewController.swift */,
 				A56FAC541FFBC4D300BD1796 /* Main.storyboard */,
 				A56FAC571FFBC4D300BD1796 /* Assets.xcassets */,
+				A56FAC651FFBC69900BD1796 /* GameScene.swift */,
 				A56FAC591FFBC4D300BD1796 /* LaunchScreen.storyboard */,
 				A56FAC5C1FFBC4D300BD1796 /* Info.plist */,
 			);
 			path = SmartBall;
+			sourceTree = "<group>";
+		};
+		A56FAC621FFBC5B300BD1796 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				A56FAC631FFBC5B400BD1796 /* SpriteKit.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -136,6 +151,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A56FAC661FFBC69900BD1796 /* GameScene.swift in Sources */,
 				A56FAC531FFBC4D300BD1796 /* ViewController.swift in Sources */,
 				A56FAC511FFBC4D300BD1796 /* AppDelegate.swift in Sources */,
 			);
