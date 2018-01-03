@@ -13,6 +13,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     var loop:SKSpriteNode!
     var wall:SKSpriteNode!
+    var wall2:SKSpriteNode!
+    var wall3:SKSpriteNode!
     var ball:SKSpriteNode!
     var pin:SKSpriteNode!
     
@@ -33,8 +35,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         physicsWorld.gravity = CGVector(dx: 0.0, dy: -9.8 / 6.0)
         physicsWorld.contactDelegate = self
         
-        setwall()
         setball()
+        setwall()
         setpin()
         
         //発射台に重力を設定する為のノードを作成
@@ -70,6 +72,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         
         ball.physicsBody?.applyImpulse(CGVector(dx: 0.0, dy: 20))
+        setball()
         
     }
     
@@ -110,7 +113,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         wall = SKSpriteNode(texture: wallTexture)
         wall.size = CGSize(width: wallTexture.size().width, height: self.frame.size.height * 0.7)
-        wall.position = CGPoint(x: self.frame.size.width - ballsize.width - wall.size.width, y: wall.size.height / 2 + ballsize.height + 3.0)
+        wall.position = CGPoint(x: self.frame.size.width - ballsize.width - wall.size.width, y: wall.size.height / 2 + ball.size.width + wall.size.width)
         wall.name = "wall"
         
         //物理演算プロパティ
@@ -118,6 +121,34 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         wall.physicsBody?.isDynamic = false
         wall.physicsBody?.friction = 0.0    //摩擦係数
         wall.physicsBody?.restitution = 0.1 //反発係数
+        
+        let wall2Texture = SKTexture(imageNamed: "Wall")
+        wall2Texture.filteringMode = SKTextureFilteringMode.linear
+        
+        wall2 = SKSpriteNode(texture: wall2Texture)
+        wall2.size = CGSize(width: self.frame.size.width - (ballsize.width + wall.size.width) * 2, height: wall2Texture.size().width)
+        wall2.position = CGPoint(x: self.frame.size.width / 2, y: ball.size.width + wall2.size.height * 1.5)
+        wall2.name = "wall_2"
+        
+        //物理演算プロパティ
+        wall2.physicsBody = SKPhysicsBody(rectangleOf: wall2.size)
+        wall2.physicsBody?.isDynamic = false
+        wall2.physicsBody?.friction = 0.0    //摩擦係数
+        wall2.physicsBody?.restitution = 0.1 //反発係数
+        
+        let wall3Texture = SKTexture(imageNamed: "Wall")
+        wall3Texture.filteringMode = SKTextureFilteringMode.linear
+        
+        wall3 = SKSpriteNode(texture: wall3Texture)
+        wall3.size = CGSize(width: wallTexture.size().width, height: self.frame.size.height * 0.7)
+        wall3.position = CGPoint(x: ballsize.width + wall.size.width, y: wall.size.height / 2 + ball.size.width + wall.size.width)
+        wall3.name = "wall_3"
+        
+        //物理演算プロパティ
+        wall3.physicsBody = SKPhysicsBody(rectangleOf: wall.size)
+        wall3.physicsBody?.isDynamic = false
+        wall3.physicsBody?.friction = 0.0    //摩擦係数
+        wall3.physicsBody?.restitution = 0.1 //反発係数
         
         let loopTexture = SKTexture(imageNamed: "loop")
         loopTexture.filteringMode = SKTextureFilteringMode.linear
@@ -137,6 +168,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         addChild(loop)
         addChild(wall)
+        addChild(wall2)
+        addChild(wall3)
     }
     
     func setball(){
