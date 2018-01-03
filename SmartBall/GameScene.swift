@@ -9,23 +9,61 @@
 import Foundation
 import SpriteKit
 
-class GameScene: SKScene {
+class GameScene: SKScene, SKPhysicsContactDelegate {
     
     var loop:SKSpriteNode!
     var wall:SKSpriteNode!
     var ball:SKSpriteNode!
     var pin:SKSpriteNode!
     
+    var launch:SKSpriteNode!      //発射台
+    var out:SKNode!                 //発射台出口
+    
+    let launchCategory: UInt32 = 1 << 0
+    let ballCategory: UInt32 = 1 << 1
+    let outCategory: UInt32 = 1 << 2
+    
+    
     // SKView上にシーンが表示されたときに呼ばれるメソッド
     override func didMove(to view: SKView) {
+        print("GameStart")
         // 背景色を設定
         backgroundColor = UIColor(red: 0.0, green: 0.0, blue: 0.0, alpha: 1.0)
         
         physicsWorld.gravity = CGVector(dx: 0.0, dy: -9.8 / 6.0)
+        physicsWorld.contactDelegate = self
         
         setwall()
         setball()
         setpin()
+        
+        //発射台に重力を設定する為のノードを作成
+        launch = SKSpriteNode(imageNamed: "Ball")
+        launch.position = CGPoint(x: self.frame.size.width + ball.size.width * 5, y: ball.size.height / 2)
+        launch.physicsBody = SKPhysicsBody(rectangleOf: CGSize(width: ball.size.width / 2, height: ball.size.height / 2))
+        launch.physicsBody?.categoryBitMask = launchCategory
+        launch.physicsBody?.collisionBitMask = launchCategory
+        launch.physicsBody?.isDynamic = false
+        addChild(launch)
+        
+        //発射台に吸い寄せる重力
+        let launchgravityNode = SKFieldNode.radialGravityField()
+        launchgravityNode.name = "launch"
+        launchgravityNode.categoryBitMask = launchCategory
+        launchgravityNode.isEnabled = true         //重力ノードの物理効果を無効にする
+        launchgravityNode.strength = 1
+        launch.addChild(launchgravityNode)
+        
+        //発射されたことを検知するノード
+        out = SKNode()
+        out.position = CGPoint(x: self.frame.size.width - ball.size.width / 2, y: wall.size.height)
+        out.name = "out"
+        out.physicsBody = SKPhysicsBody(rectangleOf: ball.size)
+        out.physicsBody?.isDynamic = false
+        out.physicsBody?.categoryBitMask = outCategory
+        out.physicsBody?.contactTestBitMask = ballCategory
+        addChild(out)
+        
     }
     
     //画面をタップした時に呼ばれる
@@ -33,6 +71,33 @@ class GameScene: SKScene {
         
         ball.physicsBody?.applyImpulse(CGVector(dx: 0.0, dy: 20))
         
+    }
+    
+    //SKPhysicsContactDelegateのメソッド。衝突した時に呼ばれる
+    func didBegin(_ contact: SKPhysicsContact) {
+        print("contact = \(String(describing: contact.bodyA.node?.name)) : \(String(describing: contact.bodyB.node?.name))")
+        
+        //ボールの発射を検知
+        if (contact.bodyA.categoryBitMask & outCategory) == outCategory || (contact.bodyB.categoryBitMask & outCategory) == outCategory {
+            //初めて発射されたものは発射台に吸い寄せられなくなる
+            if (contact.bodyA.categoryBitMask & ballCategory) == ballCategory { //bodyAがボールの時
+                if contact.bodyA.node?.physicsBody?.fieldBitMask == launchCategory {
+                    contact.bodyA.node?.physicsBody?.fieldBitMask = ballCategory
+                }else{
+                    print("すでに発射台には吸い寄せられていないよ")
+                    return
+                }
+            }else{ //bodyBがボールの時
+                if contact.bodyB.node?.physicsBody?.fieldBitMask == launchCategory {
+                    contact.bodyB.node?.physicsBody?.fieldBitMask = ballCategory
+                }else{
+                    print("すでに発射台には吸い寄せられていないよ")
+                    return
+                }
+                
+            }
+            
+        }
     }
     
     func setwall(){
@@ -80,7 +145,7 @@ class GameScene: SKScene {
         
         ball = SKSpriteNode(texture: ballTexture)
         ball.size = CGSize(width: ballTexture.size().width * 1.5, height: ballTexture.size().height * 1.5)
-        ball.position = CGPoint(x: self.frame.size.width - ball.size.width / 2, y: self.frame.size.height / 1.5)
+        ball.position = CGPoint(x: ball.size.width / 2, y: self.frame.size.height / 1.5)
         ball.name = "ball"
         
         //物理演算プロパティ
@@ -89,6 +154,9 @@ class GameScene: SKScene {
         ball.physicsBody?.allowsRotation = true //true:回転する
         ball.physicsBody?.friction = 0.1        //摩擦係数
         ball.physicsBody?.restitution = 0.1     //反発係数
+        ball.physicsBody?.categoryBitMask = ballCategory
+        ball.physicsBody?.collisionBitMask = ballCategory
+        ball.physicsBody?.fieldBitMask = launchCategory
         
         addChild(ball)
         
