@@ -12,11 +12,13 @@ import SpriteKit
 class GameScene: SKScene, SKPhysicsContactDelegate {
     
     var loop:SKSpriteNode!
-    var wall:SKSpriteNode!
-    var wall2:SKSpriteNode!
-    var wall3:SKSpriteNode!
+    var wall:SKSpriteNode!  //右の壁
+    var wall2:SKSpriteNode! //下の壁(上側)
+    var wall3:SKSpriteNode! //左の壁
+    var wall4:SKSpriteNode! //下の壁(下側)
     var ball:SKSpriteNode!
     var pin:SKSpriteNode!
+    var curve:SKSpriteNode!
     
     var launch:SKSpriteNode!      //発射台
     var out:SKNode!                 //発射台出口
@@ -112,8 +114,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         wallTexture.filteringMode = SKTextureFilteringMode.linear
         
         wall = SKSpriteNode(texture: wallTexture)
-        wall.size = CGSize(width: wallTexture.size().width, height: self.frame.size.height * 0.7)
-        wall.position = CGPoint(x: self.frame.size.width - ballsize.width - wall.size.width, y: wall.size.height / 2 + ball.size.width + wall.size.width)
+        wall.size = CGSize(width: wallTexture.size().width, height: self.frame.size.height * 0.6)
+        wall.position = CGPoint(x: self.frame.size.width - ballsize.width - wall.size.width, y: wall.size.height / 2 + ball.size.width * 4.5 + wall.size.width)
         wall.name = "wall"
         
         //物理演算プロパティ
@@ -126,8 +128,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         wall2Texture.filteringMode = SKTextureFilteringMode.linear
         
         wall2 = SKSpriteNode(texture: wall2Texture)
-        wall2.size = CGSize(width: self.frame.size.width - (ballsize.width + wall.size.width) * 2, height: wall2Texture.size().width)
-        wall2.position = CGPoint(x: self.frame.size.width / 2, y: ball.size.width + wall2.size.height * 1.5)
+        wall2.size = CGSize(width: self.frame.size.width - (ballsize.width + wall.size.width) * 2 - wall.size.width, height: wall2Texture.size().width)
+        wall2.position = CGPoint(x: self.frame.size.width / 2, y: ball.size.width * 5 + wall2.size.height * 1.5)
         wall2.name = "wall_2"
         
         //物理演算プロパティ
@@ -140,8 +142,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         wall3Texture.filteringMode = SKTextureFilteringMode.linear
         
         wall3 = SKSpriteNode(texture: wall3Texture)
-        wall3.size = CGSize(width: wallTexture.size().width, height: self.frame.size.height * 0.7)
-        wall3.position = CGPoint(x: ballsize.width + wall.size.width, y: wall.size.height / 2 + ball.size.width + wall.size.width)
+        wall3.size = CGSize(width: wallTexture.size().width, height: self.frame.size.height * 0.6)
+        wall3.position = CGPoint(x: ballsize.width + wall.size.width, y: wall.size.height / 2 + ball.size.width * 5 + wall.size.width)
         wall3.name = "wall_3"
         
         //物理演算プロパティ
@@ -149,6 +151,26 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         wall3.physicsBody?.isDynamic = false
         wall3.physicsBody?.friction = 0.0    //摩擦係数
         wall3.physicsBody?.restitution = 0.1 //反発係数
+        
+        //物理演算プロパティ
+        wall3.physicsBody = SKPhysicsBody(rectangleOf: wall.size)
+        wall3.physicsBody?.isDynamic = false
+        wall3.physicsBody?.friction = 0.0    //摩擦係数
+        wall3.physicsBody?.restitution = 0.1 //反発係数
+        
+        let wall4Texture = SKTexture(imageNamed: "Wall")
+        wall4Texture.filteringMode = SKTextureFilteringMode.linear
+        
+        wall4 = SKSpriteNode(texture: wall4Texture)
+        wall4.size = CGSize(width: self.size.width, height: wall4Texture.size().width)
+        wall4.position = CGPoint(x: self.size.width / 2, y: ball.size.width * 3 + wall2.size.height * 1.5)
+        wall4.name = "wall_4"
+        
+        //物理演算プロパティ
+        wall4.physicsBody = SKPhysicsBody(rectangleOf: wall4.size)
+        wall4.physicsBody?.isDynamic = false
+        wall4.physicsBody?.friction = 0.0    //摩擦係数
+        wall4.physicsBody?.restitution = 0.1 //反発係数
         
         let loopTexture = SKTexture(imageNamed: "loop")
         loopTexture.filteringMode = SKTextureFilteringMode.linear
@@ -163,6 +185,20 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         loop.physicsBody?.friction = 0.0    //摩擦係数
         loop.physicsBody?.restitution = 0.5 //反発係数
         
+        let curveTexture = SKTexture(imageNamed: "curve")
+        curveTexture.filteringMode = SKTextureFilteringMode.linear
+        
+        curve = SKSpriteNode(texture: curveTexture)
+        curve.size = CGSize(width: ball.size.width * 1.5, height: ball.size.height * 1.5)
+        curve.position = CGPoint(x: curve.size.width / 2, y: curve.size.height / 2 + ball.size.width * 3 + wall2.size.height * 2)
+        curve.name = "curve"
+        
+        //物理演算プロパティ
+        curve.physicsBody = SKPhysicsBody(texture: curveTexture, size: curve.size)
+        curve.physicsBody?.isDynamic = false
+        curve.physicsBody?.friction = 0.0    //摩擦係数
+        curve.physicsBody?.restitution = 0.1 //反発係数
+        
         //画面端を壁にする
         self.physicsBody = SKPhysicsBody(edgeLoopFrom: self.frame)
         
@@ -170,6 +206,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         addChild(wall)
         addChild(wall2)
         addChild(wall3)
+        addChild(wall4)
+        addChild(curve)
     }
     
     func setball(){

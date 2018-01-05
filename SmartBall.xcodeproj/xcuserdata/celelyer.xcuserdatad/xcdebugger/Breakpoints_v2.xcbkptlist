@@ -10,11 +10,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "SmartBall/GameScene.swift"
-            timestampString = "536656546.89869"
+            timestampString = "536810460.712499"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "80"
-            endingLineNumber = "80"
+            startingLineNumber = "82"
+            endingLineNumber = "82"
             landmarkName = "didBegin(_:)"
             landmarkType = "7">
          </BreakpointContent>
