@@ -37,6 +37,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var cue_joint:SKNode! //キューのジョイントの支点
     var hall:SKSpriteNode!
     var hall2:SKSpriteNode!
+    var hall3:SKSpriteNode!
     
     var launch:SKSpriteNode!      //発射台
     var out:SKNode!                 //発射台出口
@@ -50,6 +51,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     let wallCategory: UInt32 = 1 << 3
     let deleteCategory: UInt32 = 1 << 4
     let hall5Category: UInt32 = 1 << 5
+    let hall15Category: UInt32 = 1 << 6
     
     
     // SKView上にシーンが表示されたときに呼ばれるメソッド
@@ -269,6 +271,21 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 
             }
             
+        }else if (contact.bodyA.categoryBitMask & hall15Category) == hall15Category || (contact.bodyB.categoryBitMask & hall15Category) == hall15Category {
+            if (contact.bodyA.categoryBitMask & ballCategory) == ballCategory { //bodyAがボールの時
+                contact.bodyA.node?.removeFromParent()
+                stride(from: 0.0, to: 15.0, by: 1.0).forEach { i in
+                    setball()
+                }
+                
+            }else{ //bodyBがボールの時
+                contact.bodyB.node?.removeFromParent()
+                
+                stride(from: 0.0, to: 15.0, by: 1.0).forEach { i in
+                    setball()
+                }
+                
+            }
         }
     }
 
@@ -607,6 +624,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     func sethall(){
         let hallTexture = SKTexture(imageNamed: "hall5")
         hallTexture.filteringMode = SKTextureFilteringMode.linear
+        let hall15Texture = SKTexture(imageNamed: "hall15")
+        hallTexture.filteringMode = SKTextureFilteringMode.linear
         
         hall = SKSpriteNode(texture: hallTexture)
         hall.size = CGSize(width: ball.size.width * 1.1, height: ball.size.height * 1.1)
@@ -630,6 +649,18 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         hall2.physicsBody?.categoryBitMask = hall5Category
         hall2.physicsBody?.contactTestBitMask = ballCategory
         
+        hall3 = SKSpriteNode(texture: hall15Texture)
+        hall3.size = CGSize(width: ball.size.width * 1.1, height: ball.size.height * 1.1)
+        hall3.position = CGPoint(x: self.frame.size.width / 1.5, y: self.frame.size.height / 2 - hall2.size.height)
+        hall3.name = "hall5"
+        
+        //物理演算プロパティ
+        hall3.physicsBody = SKPhysicsBody(circleOfRadius: pin.size.width / 3.0)
+        hall3.physicsBody?.isDynamic = false
+        hall3.physicsBody?.categoryBitMask = hall15Category
+        hall3.physicsBody?.contactTestBitMask = ballCategory
+        
+        addChild(hall3)
         addChild(hall2)
         addChild(hall)
         
