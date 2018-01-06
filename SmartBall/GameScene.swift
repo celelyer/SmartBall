@@ -7,9 +7,12 @@
 //
 
 import Foundation
+import UIKit
 import SpriteKit
 
 class GameScene: SKScene, SKPhysicsContactDelegate {
+    
+    var myButton: UIButton!
     
     var loop:SKSpriteNode!
     var wall:SKSpriteNode!  //右の壁
@@ -18,10 +21,22 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var wall4:SKSpriteNode! //下の壁(下側)
     var ball:SKSpriteNode!
     var pin:SKSpriteNode!
+    var pin2:SKSpriteNode!
+    var pin3:SKSpriteNode!
+    var pin4:SKSpriteNode!
+    var pin5:SKSpriteNode!
+    var pin6:SKSpriteNode!
+    var pin7:SKSpriteNode!
+    var pin8:SKSpriteNode!
+    var pin9:SKSpriteNode!
+    var pin10:SKSpriteNode!
+    var pin11:SKSpriteNode!
     var curve:SKSpriteNode!
     var curve2:SKSpriteNode!
     var cue:SKSpriteNode!
     var cue_joint:SKNode! //キューのジョイントの支点
+    var hall:SKSpriteNode!
+    var hall2:SKSpriteNode!
     
     var launch:SKSpriteNode!      //発射台
     var out:SKNode!                 //発射台出口
@@ -34,22 +49,116 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     let outCategory: UInt32 = 1 << 2
     let wallCategory: UInt32 = 1 << 3
     let deleteCategory: UInt32 = 1 << 4
+    let hall5Category: UInt32 = 1 << 5
     
     
     // SKView上にシーンが表示されたときに呼ばれるメソッド
     override func didMove(to view: SKView) {
         print("GameStart")
+        
+        // Buttonを生成する.
+        myButton = UIButton()
+        // ボタンのサイズ.
+        let bWidth: CGFloat = 100
+        let bHeight: CGFloat = 50
+        
+        // ボタンのX,Y座標.
+        let posX: CGFloat = 0.0
+        let posY: CGFloat = self.frame.size.height - 50
+        
+        // ボタンの設置座標とサイズを設定する.
+        myButton.frame = CGRect(x: posX, y: posY, width: bWidth, height: bHeight)
+        
+        // ボタンの背景色を設定.
+        myButton.backgroundColor = UIColor.red
+        
+        // ボタンの枠を丸くする.
+        myButton.layer.masksToBounds = true
+        
+        // コーナーの半径を設定する.
+        myButton.layer.cornerRadius = 20.0
+        
+        // タイトルを設定する(通常時).
+        myButton.setTitle("やり直し", for: .normal)
+        myButton.setTitleColor(UIColor.white, for: .normal)
+        
+        // タイトルを設定する(ボタンがハイライトされた時).
+        //myButton.setTitle("ボタン(押された時)", for: .highlighted)
+        //myButton.setTitleColor(UIColor.black, for: .highlighted)
+        
+        // ボタンにタグをつける.
+        myButton.tag = 1
+        
+        // イベントを追加する
+        myButton.addTarget(self, action: #selector(onClickMyButton(sender:)), for: .touchUpInside)
+        
+        // ボタンをViewに追加.
+        self.view!.addSubview(myButton)
+        
         // 背景色を設定
         backgroundColor = UIColor(red: 0.0, green: 0.0, blue: 0.0, alpha: 1.0)
         
         physicsWorld.gravity = CGVector(dx: 0.0, dy: -9.8 / 6.0)
         physicsWorld.contactDelegate = self
         
-        setball()
+        stride(from: 0.0, to: 15.0, by: 1.0).forEach { i in
+            setball()
+        }
         setwall()
         setpin()
         setcue()
         setpoint()
+        sethall()
+
+        
+        //発射台に重力を設定する為のノードを作成
+        launch = SKSpriteNode(imageNamed: "Ball")
+        launch.position = CGPoint(x: self.frame.size.width + ball.size.width * 5, y: ball.size.height / 2)
+        launch.physicsBody = SKPhysicsBody(rectangleOf: CGSize(width: ball.size.width / 2, height: ball.size.height / 2))
+        launch.physicsBody?.categoryBitMask = launchCategory
+        launch.physicsBody?.collisionBitMask = launchCategory
+        launch.physicsBody?.isDynamic = false
+        addChild(launch)
+        
+        //発射台に吸い寄せる重力
+        let launchgravityNode = SKFieldNode.radialGravityField()
+        launchgravityNode.name = "launch"
+        launchgravityNode.categoryBitMask = launchCategory
+        launchgravityNode.isEnabled = true         //重力ノードの物理効果を無効にする
+        launchgravityNode.strength = 1
+        launch.addChild(launchgravityNode)
+        
+        //発射されたことを検知するノード
+        out = SKNode()
+        out.position = CGPoint(x: self.frame.size.width - ball.size.width / 2, y: wall.size.height)
+        out.name = "out"
+        out.physicsBody = SKPhysicsBody(rectangleOf: ball.size)
+        out.physicsBody?.isDynamic = false
+        out.physicsBody?.categoryBitMask = outCategory
+        out.physicsBody?.contactTestBitMask = ballCategory
+        addChild(out)
+        
+    }
+    
+    //やり直しボタン
+    @objc func onClickMyButton(sender : UIButton){
+        removeAllChildren()
+        
+        // 背景色を設定
+        backgroundColor = UIColor(red: 0.0, green: 0.0, blue: 0.0, alpha: 1.0)
+        
+        physicsWorld.gravity = CGVector(dx: 0.0, dy: -9.8 / 6.0)
+        physicsWorld.contactDelegate = self
+        
+        stride(from: 0.0, to: 15.0, by: 1.0).forEach { i in
+            setball()
+        }
+        setwall()
+        setpin()
+        setcue()
+        setpoint()
+        sethall()
+        
         
         //発射台に重力を設定する為のノードを作成
         launch = SKSpriteNode(imageNamed: "Ball")
@@ -89,7 +198,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         }
         
         tap_point = touches.first!.location(in: self)
-        setball()
+        //setball()
         
     }
     
@@ -142,6 +251,22 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 contact.bodyA.node?.removeFromParent()
             }else{ //bodyBがボールの時
                 contact.bodyB.node?.removeFromParent()
+            }
+            
+        }else if (contact.bodyA.categoryBitMask & hall5Category) == hall5Category || (contact.bodyB.categoryBitMask & hall5Category) == hall5Category { //ボールが得点判定に触れた時
+            if (contact.bodyA.categoryBitMask & ballCategory) == ballCategory { //bodyAがボールの時
+                contact.bodyA.node?.removeFromParent()
+                stride(from: 0.0, to: 5.0, by: 1.0).forEach { i in
+                    setball()
+                }
+                
+            }else{ //bodyBがボールの時
+                contact.bodyB.node?.removeFromParent()
+                
+                stride(from: 0.0, to: 5.0, by: 1.0).forEach { i in
+                    setball()
+                }
+                
             }
             
         }
@@ -271,13 +396,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     func setball(){
-        let ballTexture = SKTexture(imageNamed: "Ball")
+        let ballTexture = SKTexture(imageNamed: "star")
         ballTexture.filteringMode = SKTextureFilteringMode.linear
         
         ball = SKSpriteNode(texture: ballTexture)
         ball.size = CGSize(width: ballTexture.size().width * 1.5, height: ballTexture.size().height * 1.5)
         ball.position = CGPoint(x: ball.size.width / 2, y: self.frame.size.height / 1.5)
-        ball.name = "ball"
+        ball.name = "star"
         
         //物理演算プロパティ
         ball.physicsBody = SKPhysicsBody(circleOfRadius: ball.size.width / 2.0)
@@ -298,7 +423,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         pinTexture.filteringMode = SKTextureFilteringMode.linear
         
         pin = SKSpriteNode(texture: pinTexture)
-        pin.position = CGPoint(x: ball.size.width / 2, y: self.frame.size.height * 0.8)
+        pin.position = CGPoint(x: ball.size.width / 1.5, y: self.frame.size.height * 0.8)
         pin.name = "pin_1"
         
         //物理演算プロパティ
@@ -307,7 +432,106 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         pin.physicsBody?.friction = 0.0    //摩擦係数
         pin.physicsBody?.restitution = 0.7 //反発係数
         
+        pin2 = SKSpriteNode(texture: pinTexture)
+        pin2.position = CGPoint(x: self.frame.size.width / 2, y: self.frame.size.height / 2 + ball.size.height)
+        pin2.name = "pin_2"
+        
+        //物理演算プロパティ
+        pin2.physicsBody = SKPhysicsBody(circleOfRadius: pin.size.width / 3.0)
+        pin2.physicsBody?.isDynamic = false
+        pin2.physicsBody?.friction = 0.0    //摩擦係数
+        pin2.physicsBody?.restitution = 0.7 //反発係数
+        
+        pin3 = SKSpriteNode(texture: pinTexture)
+        pin3.position = CGPoint(x: pin2.position.x + (ball.size.width * 1.1) * 1.0, y: pin2.position.y + (ball.size.width * 1.1) * 1.0)
+        pin3.name = "pin_3"
+        
+        //物理演算プロパティ
+        pin3.physicsBody = SKPhysicsBody(circleOfRadius: pin.size.width / 3.0)
+        pin3.physicsBody?.isDynamic = false
+        pin3.physicsBody?.friction = 0.0    //摩擦係数
+        pin3.physicsBody?.restitution = 0.7 //反発係数
+        
+        pin4 = SKSpriteNode(texture: pinTexture)
+        pin4.position = CGPoint(x: pin2.position.x + (ball.size.width * 1.5) * 2.0, y: pin2.position.y + (ball.size.width * 1.1) * 1.0)
+        pin4.name = "pin_4"
+        
+        //物理演算プロパティ
+        pin4.physicsBody = SKPhysicsBody(circleOfRadius: pin.size.width / 3.0)
+        pin4.physicsBody?.isDynamic = false
+        pin4.physicsBody?.friction = 0.0    //摩擦係数
+        pin4.physicsBody?.restitution = 0.7 //反発係数
+        
+        pin5 = SKSpriteNode(texture: pinTexture)
+        pin5.position = CGPoint(x: pin2.position.x + (ball.size.width * 1.5) * 3.0, y: pin2.position.y + (ball.size.width * 1.1) * 1.0)
+        pin5.name = "pin_5"
+        
+        //物理演算プロパティ
+        pin5.physicsBody = SKPhysicsBody(circleOfRadius: pin.size.width / 3.0)
+        pin5.physicsBody?.isDynamic = false
+        pin5.physicsBody?.friction = 0.0    //摩擦係数
+        pin5.physicsBody?.restitution = 0.7 //反発係数
+        
+        pin6 = SKSpriteNode(texture: pinTexture)
+        pin6.position = CGPoint(x: pin2.position.x + (ball.size.width * 1.5) * 2.5, y: pin2.position.y - (ball.size.width * 1.1) * 1.0)
+        pin6.name = "pin_6"
+        
+        //物理演算プロパティ
+        pin6.physicsBody = SKPhysicsBody(circleOfRadius: pin.size.width / 3.0)
+        pin6.physicsBody?.isDynamic = false
+        pin6.physicsBody?.friction = 0.0    //摩擦係数
+        pin6.physicsBody?.restitution = 0.7 //反発係数
+        
+        pin7 = SKSpriteNode(texture: pinTexture)
+        pin7.position = CGPoint(x: pin2.position.x - (ball.size.width * 1.5) * 1.0, y: pin2.position.y + (ball.size.width * 1.1) * 1.0)
+        pin7.name = "pin_7"
+        
+        //物理演算プロパティ
+        pin7.physicsBody = SKPhysicsBody(circleOfRadius: pin.size.width / 3.0)
+        pin7.physicsBody?.isDynamic = false
+        pin7.physicsBody?.friction = 0.0    //摩擦係数
+        pin7.physicsBody?.restitution = 0.7 //反発係数
+        
+        pin8 = SKSpriteNode(texture: pinTexture)
+        pin8.position = CGPoint(x: pin2.position.x - (ball.size.width * 1.5) * 2.0, y: pin2.position.y + (ball.size.width * 1.1) * 1.0)
+        pin8.name = "pin_8"
+        
+        //物理演算プロパティ
+        pin8.physicsBody = SKPhysicsBody(circleOfRadius: pin.size.width / 3.0)
+        pin8.physicsBody?.isDynamic = false
+        pin8.physicsBody?.friction = 0.0    //摩擦係数
+        pin8.physicsBody?.restitution = 0.7 //反発係数
+        
+        pin9 = SKSpriteNode(texture: pinTexture)
+        pin9.position = CGPoint(x: pin2.position.x - (ball.size.width * 1.5) * 3.0, y: pin2.position.y + (ball.size.width * 1.1) * 1.0)
+        pin9.name = "pin_9"
+        
+        //物理演算プロパティ
+        pin9.physicsBody = SKPhysicsBody(circleOfRadius: pin.size.width / 3.0)
+        pin9.physicsBody?.isDynamic = false
+        pin9.physicsBody?.friction = 0.0    //摩擦係数
+        pin9.physicsBody?.restitution = 0.7 //反発係数
+        
+        pin10 = SKSpriteNode(texture: pinTexture)
+        pin10.position = CGPoint(x: pin2.position.x - (ball.size.width * 1.5) * 2.5, y: pin2.position.y - (ball.size.width * 1.1) * 1.0)
+        pin10.name = "pin_7"
+        
+        //物理演算プロパティ
+        pin10.physicsBody = SKPhysicsBody(circleOfRadius: pin.size.width / 3.0)
+        pin10.physicsBody?.isDynamic = false
+        pin10.physicsBody?.friction = 0.0    //摩擦係数
+        pin10.physicsBody?.restitution = 0.7 //反発係数
+        
         addChild(pin)
+        addChild(pin2)
+        addChild(pin3)
+        addChild(pin4)
+        addChild(pin5)
+        addChild(pin6)
+        addChild(pin7)
+        addChild(pin8)
+        addChild(pin9)
+        addChild(pin10)
     }
     
     func setcue(){
@@ -378,5 +602,36 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         deleteNode.physicsBody?.contactTestBitMask = ballCategory
         
         addChild(deleteNode)
+    }
+    
+    func sethall(){
+        let hallTexture = SKTexture(imageNamed: "hall5")
+        hallTexture.filteringMode = SKTextureFilteringMode.linear
+        
+        hall = SKSpriteNode(texture: hallTexture)
+        hall.size = CGSize(width: ball.size.width * 1.1, height: ball.size.height * 1.1)
+        hall.position = CGPoint(x: self.frame.size.width / 2, y: self.frame.size.height / 2)
+        hall.name = "hall5"
+        
+        //物理演算プロパティ
+        hall.physicsBody = SKPhysicsBody(circleOfRadius: pin.size.width / 3.0)
+        hall.physicsBody?.isDynamic = false
+        hall.physicsBody?.categoryBitMask = hall5Category
+        hall.physicsBody?.contactTestBitMask = ballCategory
+        
+        hall2 = SKSpriteNode(texture: hallTexture)
+        hall2.size = CGSize(width: ball.size.width * 1.1, height: ball.size.height * 1.1)
+        hall2.position = CGPoint(x: self.frame.size.width / 1.5, y: self.frame.size.height / 2)
+        hall2.name = "hall5"
+        
+        //物理演算プロパティ
+        hall2.physicsBody = SKPhysicsBody(circleOfRadius: pin.size.width / 3.0)
+        hall2.physicsBody?.isDynamic = false
+        hall2.physicsBody?.categoryBitMask = hall5Category
+        hall2.physicsBody?.contactTestBitMask = ballCategory
+        
+        addChild(hall2)
+        addChild(hall)
+        
     }
 }
