@@ -141,7 +141,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         launchgravityNode.name = "launch"
         launchgravityNode.categoryBitMask = launchCategory
         launchgravityNode.isEnabled = true         //重力ノードの物理効果を無効にする
-        launchgravityNode.strength = 1
+        launchgravityNode.strength = 2
         launch.addChild(launchgravityNode)
         
         //発射されたことを検知するノード
@@ -281,32 +281,64 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         }else if (contact.bodyA.categoryBitMask & hall5Category) == hall5Category || (contact.bodyB.categoryBitMask & hall5Category) == hall5Category { //ボールが得点判定に触れた時
             if (contact.bodyA.categoryBitMask & ballCategory) == ballCategory { //bodyAがボールの時
                 contact.bodyA.node?.removeFromParent()
-                stride(from: 0.0, to: 5.0, by: 1.0).forEach { i in
-                    setball()
-                }
+                count = 0
+                timer = Timer.scheduledTimer(withTimeInterval: ballInterbal, repeats: true, block: { (timer) in
+                    
+                    if self.count == 5{
+                        timer.invalidate()
+                    }else{
+                        self.setball()
+                        self.count += 1
+                    }
+                    
+                })
                 
             }else{ //bodyBがボールの時
                 contact.bodyB.node?.removeFromParent()
                 
-                stride(from: 0.0, to: 5.0, by: 1.0).forEach { i in
-                    setball()
-                }
+                count = 0
+                timer = Timer.scheduledTimer(withTimeInterval: ballInterbal, repeats: true, block: { (timer) in
+                    
+                    if self.count == 5{
+                        timer.invalidate()
+                    }else{
+                        self.setball()
+                        self.count += 1
+                    }
+                    
+                })
                 
             }
             
         }else if (contact.bodyA.categoryBitMask & hall15Category) == hall15Category || (contact.bodyB.categoryBitMask & hall15Category) == hall15Category {
             if (contact.bodyA.categoryBitMask & ballCategory) == ballCategory { //bodyAがボールの時
                 contact.bodyA.node?.removeFromParent()
-                stride(from: 0.0, to: 15.0, by: 1.0).forEach { i in
-                    setball()
-                }
+                count = 0
+                timer = Timer.scheduledTimer(withTimeInterval: ballInterbal, repeats: true, block: { (timer) in
+                    
+                    if self.count == 15{
+                        timer.invalidate()
+                    }else{
+                        self.setball()
+                        self.count += 1
+                    }
+                    
+                })
                 
             }else{ //bodyBがボールの時
                 contact.bodyB.node?.removeFromParent()
                 
-                stride(from: 0.0, to: 15.0, by: 1.0).forEach { i in
-                    setball()
-                }
+                count = 0
+                timer = Timer.scheduledTimer(withTimeInterval: ballInterbal, repeats: true, block: { (timer) in
+                    
+                    if self.count == 15{
+                        timer.invalidate()
+                    }else{
+                        self.setball()
+                        self.count += 1
+                    }
+                    
+                })
                 
             }
         }
