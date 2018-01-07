@@ -12,6 +12,10 @@ import SpriteKit
 
 class GameScene: SKScene, SKPhysicsContactDelegate {
     
+    var timer = Timer()
+    var count = 0
+    var ballInterbal = 0.3 //ボールが排出される間隔(秒)
+    
     var myButton: UIButton!
     
     var loop:SKSpriteNode!
@@ -103,9 +107,19 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         physicsWorld.gravity = CGVector(dx: 0.0, dy: -9.8 / 6.0)
         physicsWorld.contactDelegate = self
         
-        stride(from: 0.0, to: 15.0, by: 1.0).forEach { i in
-            setball()
-        }
+        setball()
+        
+        count = 0
+        timer = Timer.scheduledTimer(withTimeInterval: ballInterbal, repeats: true, block: { (timer) in
+            
+            if self.count == 14{
+                timer.invalidate()
+            }else{
+                self.setball()
+                self.count += 1
+            }
+            
+        })
         setwall()
         setpin()
         setcue()
@@ -152,9 +166,18 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         physicsWorld.gravity = CGVector(dx: 0.0, dy: -9.8 / 6.0)
         physicsWorld.contactDelegate = self
         
-        stride(from: 0.0, to: 15.0, by: 1.0).forEach { i in
-            setball()
-        }
+        setball()
+        count = 0
+        timer = Timer.scheduledTimer(withTimeInterval: ballInterbal, repeats: true, block: { (timer) in
+            
+            if self.count == 14{
+                timer.invalidate()
+            }else{
+                self.setball()
+                self.count += 1
+            }
+            
+        })
         setwall()
         setpin()
         setcue()
