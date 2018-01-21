@@ -12,9 +12,11 @@ import SpriteKit
 
 class GameScene: SKScene, SKPhysicsContactDelegate {
     
-    var timer = Timer()
+    var timer: Timer!
     var count = 0
     var ballInterbal = 0.3 //ボールが排出される間隔(秒)
+    var ballcount = 0   //ボールの数
+    var ballcountnode:SKLabelNode!
     
     var myButton: UIButton!
     
@@ -35,6 +37,16 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var pin9:SKSpriteNode!
     var pin10:SKSpriteNode!
     var pin11:SKSpriteNode!
+    var pin12:SKSpriteNode!
+    var pin13:SKSpriteNode!
+    var pin14:SKSpriteNode!
+    var pin15:SKSpriteNode!
+    var pin16:SKSpriteNode!
+    var pin17:SKSpriteNode!
+    var pin18:SKSpriteNode!
+    var pin19:SKSpriteNode!
+    var pin20:SKSpriteNode!
+    var pin21:SKSpriteNode!
     var curve:SKSpriteNode!
     var curve2:SKSpriteNode!
     var cue:SKSpriteNode!
@@ -42,6 +54,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var hall:SKSpriteNode!
     var hall2:SKSpriteNode!
     var hall3:SKSpriteNode!
+    var hall4:SKSpriteNode!
     
     var launch:SKSpriteNode!      //発射台
     var out:SKNode!                 //発射台出口
@@ -106,17 +119,17 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         physicsWorld.gravity = CGVector(dx: 0.0, dy: -9.8 / 6.0)
         physicsWorld.contactDelegate = self
-        
+        setscore()
         setball()
         
-        count = 0
+        count = 14
         timer = Timer.scheduledTimer(withTimeInterval: ballInterbal, repeats: true, block: { (timer) in
             
-            if self.count == 14{
-                timer.invalidate()
+            if self.count <= 0{
+                self.timer = nil
             }else{
                 self.setball()
-                self.count += 1
+                self.count -= 1
             }
             
         })
@@ -125,6 +138,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         setcue()
         setpoint()
         sethall()
+
 
         
         //発射台に重力を設定する為のノードを作成
@@ -165,16 +179,16 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         physicsWorld.gravity = CGVector(dx: 0.0, dy: -9.8 / 6.0)
         physicsWorld.contactDelegate = self
-        
+        setscore()
         setball()
-        count = 0
+        count = 14
         timer = Timer.scheduledTimer(withTimeInterval: ballInterbal, repeats: true, block: { (timer) in
             
-            if self.count == 14{
-                timer.invalidate()
+            if self.count <= 0{
+                self.timer = nil
             }else{
                 self.setball()
-                self.count += 1
+                self.count -= 1
             }
             
         })
@@ -232,9 +246,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         //タッチした座標を取得する
         let location = touches.first!.location(in: self)
         
-        if cue.size.height * 1.3 >= (tap_point.y - location.y) {
+        if cue.size.height * 1.3 >= (tap_point.y - location.y) / 3{
             //スライドに合わせて移動する
-            let action = SKAction.moveTo(y: cue_joint.position.y - (tap_point.y - location.y), duration: 0.0)
+            let action = SKAction.moveTo(y: cue_joint.position.y - ((tap_point.y - location.y)) / 3, duration: 0.0)
             cue.run(action)
         }
         
@@ -274,36 +288,56 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         }else if (contact.bodyA.categoryBitMask & deleteCategory) == deleteCategory || (contact.bodyB.categoryBitMask & deleteCategory) == deleteCategory { //ボールが削除判定に触れた時
             if (contact.bodyA.categoryBitMask & ballCategory) == ballCategory { //bodyAがボールの時
                 contact.bodyA.node?.removeFromParent()
+                ballcount -= 1
+                ballcountnode.text = String("×\(ballcount)")
+                print("玉\(ballcount)個")
             }else{ //bodyBがボールの時
                 contact.bodyB.node?.removeFromParent()
+                ballcount -= 1
+                ballcountnode.text = String("×\(ballcount)")
+                print("玉\(ballcount)個")
             }
             
         }else if (contact.bodyA.categoryBitMask & hall5Category) == hall5Category || (contact.bodyB.categoryBitMask & hall5Category) == hall5Category { //ボールが得点判定に触れた時
             if (contact.bodyA.categoryBitMask & ballCategory) == ballCategory { //bodyAがボールの時
                 contact.bodyA.node?.removeFromParent()
-                count = 0
+                ballcount -= 1
+                ballcountnode.text = String("×\(ballcount)")
+                print("玉\(ballcount)個")
+                count += 5
                 timer = Timer.scheduledTimer(withTimeInterval: ballInterbal, repeats: true, block: { (timer) in
                     
-                    if self.count == 5{
-                        timer.invalidate()
+                    if self.timer != nil{
+                        return
                     }else{
-                        self.setball()
-                        self.count += 1
+                        if self.count <= 0{
+                            self.timer = nil
+                        }else{
+                            self.setball()
+                            self.count -= 1
+                        }
                     }
+                    
                     
                 })
                 
             }else{ //bodyBがボールの時
                 contact.bodyB.node?.removeFromParent()
-                
-                count = 0
+                ballcount -= 1
+                ballcountnode.text = String("×\(ballcount)")
+                print("玉\(ballcount)個")
+                count += 5
                 timer = Timer.scheduledTimer(withTimeInterval: ballInterbal, repeats: true, block: { (timer) in
                     
-                    if self.count == 5{
-                        timer.invalidate()
+                    if self.timer != nil{
+                        return
                     }else{
-                        self.setball()
-                        self.count += 1
+                        if self.count <= 0{
+                            self.timer = nil
+                        }else{
+                            self.setball()
+                            self.count -= 1
+                        }
                     }
                     
                 })
@@ -313,29 +347,42 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         }else if (contact.bodyA.categoryBitMask & hall15Category) == hall15Category || (contact.bodyB.categoryBitMask & hall15Category) == hall15Category {
             if (contact.bodyA.categoryBitMask & ballCategory) == ballCategory { //bodyAがボールの時
                 contact.bodyA.node?.removeFromParent()
-                count = 0
+                ballcount -= 1
+                ballcountnode.text = String("×\(ballcount)")
+                print("玉\(ballcount)個")
+                count += 15
                 timer = Timer.scheduledTimer(withTimeInterval: ballInterbal, repeats: true, block: { (timer) in
                     
-                    if self.count == 15{
-                        timer.invalidate()
+                    if self.timer != nil{
+                        return
                     }else{
-                        self.setball()
-                        self.count += 1
+                        if self.count <= 0{
+                            self.timer = nil
+                        }else{
+                            self.setball()
+                            self.count -= 1
+                        }
                     }
                     
                 })
                 
             }else{ //bodyBがボールの時
                 contact.bodyB.node?.removeFromParent()
-                
-                count = 0
+                ballcount -= 1
+                ballcountnode.text = String("×\(ballcount)")
+                print("玉\(ballcount)個")
+                count += 15
                 timer = Timer.scheduledTimer(withTimeInterval: ballInterbal, repeats: true, block: { (timer) in
                     
-                    if self.count == 15{
-                        timer.invalidate()
+                    if self.timer != nil{
+                        return
                     }else{
-                        self.setball()
-                        self.count += 1
+                        if self.count <= 0{
+                            self.timer = nil
+                        }else{
+                            self.setball()
+                            self.count -= 1
+                        }
                     }
                     
                 })
@@ -370,7 +417,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         wall2 = SKSpriteNode(texture: wall2Texture)
         wall2.size = CGSize(width: self.frame.size.width - (ballsize.width + wall.size.width) * 2 - wall.size.width, height: wall2Texture.size().width)
-        wall2.position = CGPoint(x: self.frame.size.width / 2, y: ball.size.width * 5 + wall2.size.height * 1.5)
+        wall2.position = CGPoint(x: self.frame.size.width / 2, y: ball.size.width * 6 + wall2.size.height * 1.5)
         wall2.name = "wall_2"
         
         //物理演算プロパティ
@@ -383,8 +430,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         wall3Texture.filteringMode = SKTextureFilteringMode.linear
         
         wall3 = SKSpriteNode(texture: wall3Texture)
-        wall3.size = CGSize(width: wallTexture.size().width, height: self.frame.size.height * 0.6)
-        wall3.position = CGPoint(x: ballsize.width + wall.size.width, y: wall.size.height / 2 + ball.size.width * 5 + wall.size.width)
+        wall3.size = CGSize(width: wallTexture.size().width, height: self.frame.size.height * 0.6 - ball.size.height)
+        wall3.position = CGPoint(x: ballsize.width + wall.size.width, y: wall.size.height / 2 + ball.size.width * 5.5 + wall.size.width)
         wall3.name = "wall_3"
         
         //物理演算プロパティ
@@ -393,11 +440,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         wall3.physicsBody?.friction = 0.0    //摩擦係数
         wall3.physicsBody?.restitution = 0.1 //反発係数
         
-        //物理演算プロパティ
-        wall3.physicsBody = SKPhysicsBody(rectangleOf: wall.size)
-        wall3.physicsBody?.isDynamic = false
-        wall3.physicsBody?.friction = 0.0    //摩擦係数
-        wall3.physicsBody?.restitution = 0.1 //反発係数
         
         let wall4Texture = SKTexture(imageNamed: "Wall")
         wall4Texture.filteringMode = SKTextureFilteringMode.linear
@@ -431,7 +473,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         curveTexture.filteringMode = SKTextureFilteringMode.linear
         
         curve = SKSpriteNode(texture: curveTexture)
-        curve.size = CGSize(width: ball.size.width * 1.5, height: ball.size.height * 1.5)
+        curve.size = CGSize(width: ball.size.width * 3.0, height: ball.size.height * 3.0)
         curve.position = CGPoint(x: curve.size.width / 2, y: curve.size.height / 2 + ball.size.width * 3 + wall2.size.height * 2)
         curve.name = "curve"
         
@@ -445,7 +487,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         curve2Texture.filteringMode = SKTextureFilteringMode.linear
         
         curve2 = SKSpriteNode(texture: curve2Texture)
-        curve2.size = CGSize(width: ball.size.width * 1.5, height: ball.size.height * 0.5)
+        curve2.size = CGSize(width: ball.size.width * 4.0, height: ball.size.height * 1.5)
         curve2.position = CGPoint(x: wall.position.x - wall.size.width / 2 - curve2.size.width / 2, y: wall2.position.y - wall2.size.height / 2 - curve2.size.height / 2)
         curve2.name = "curve"
         
@@ -486,6 +528,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         ball.physicsBody?.collisionBitMask = ballCategory | wallCategory
         ball.physicsBody?.fieldBitMask = launchCategory
         
+        ballcount += 1
+        ballcountnode.text = String("×\(ballcount)")
+        print("玉\(ballcount)個")
         addChild(ball)
         
     }
@@ -497,7 +542,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         pin = SKSpriteNode(texture: pinTexture)
         pin.position = CGPoint(x: ball.size.width / 1.5, y: self.frame.size.height * 0.8)
         pin.name = "pin_1"
-        
         //物理演算プロパティ
         pin.physicsBody = SKPhysicsBody(circleOfRadius: pin.size.width / 3.0)
         pin.physicsBody?.isDynamic = false
@@ -505,9 +549,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         pin.physicsBody?.restitution = 0.7 //反発係数
         
         pin2 = SKSpriteNode(texture: pinTexture)
-        pin2.position = CGPoint(x: self.frame.size.width / 2, y: self.frame.size.height / 2 + ball.size.height)
         pin2.name = "pin_2"
-        
         //物理演算プロパティ
         pin2.physicsBody = SKPhysicsBody(circleOfRadius: pin.size.width / 3.0)
         pin2.physicsBody?.isDynamic = false
@@ -515,9 +557,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         pin2.physicsBody?.restitution = 0.7 //反発係数
         
         pin3 = SKSpriteNode(texture: pinTexture)
-        pin3.position = CGPoint(x: pin2.position.x + (ball.size.width * 1.1) * 1.0, y: pin2.position.y + (ball.size.width * 1.1) * 1.0)
         pin3.name = "pin_3"
-        
         //物理演算プロパティ
         pin3.physicsBody = SKPhysicsBody(circleOfRadius: pin.size.width / 3.0)
         pin3.physicsBody?.isDynamic = false
@@ -525,9 +565,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         pin3.physicsBody?.restitution = 0.7 //反発係数
         
         pin4 = SKSpriteNode(texture: pinTexture)
-        pin4.position = CGPoint(x: pin2.position.x + (ball.size.width * 1.5) * 2.0, y: pin2.position.y + (ball.size.width * 1.1) * 1.0)
         pin4.name = "pin_4"
-        
         //物理演算プロパティ
         pin4.physicsBody = SKPhysicsBody(circleOfRadius: pin.size.width / 3.0)
         pin4.physicsBody?.isDynamic = false
@@ -535,9 +573,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         pin4.physicsBody?.restitution = 0.7 //反発係数
         
         pin5 = SKSpriteNode(texture: pinTexture)
-        pin5.position = CGPoint(x: pin2.position.x + (ball.size.width * 1.5) * 3.0, y: pin2.position.y + (ball.size.width * 1.1) * 1.0)
         pin5.name = "pin_5"
-        
         //物理演算プロパティ
         pin5.physicsBody = SKPhysicsBody(circleOfRadius: pin.size.width / 3.0)
         pin5.physicsBody?.isDynamic = false
@@ -545,9 +581,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         pin5.physicsBody?.restitution = 0.7 //反発係数
         
         pin6 = SKSpriteNode(texture: pinTexture)
-        pin6.position = CGPoint(x: pin2.position.x + (ball.size.width * 1.5) * 2.5, y: pin2.position.y - (ball.size.width * 1.1) * 1.0)
         pin6.name = "pin_6"
-        
         //物理演算プロパティ
         pin6.physicsBody = SKPhysicsBody(circleOfRadius: pin.size.width / 3.0)
         pin6.physicsBody?.isDynamic = false
@@ -555,9 +589,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         pin6.physicsBody?.restitution = 0.7 //反発係数
         
         pin7 = SKSpriteNode(texture: pinTexture)
-        pin7.position = CGPoint(x: pin2.position.x - (ball.size.width * 1.5) * 1.0, y: pin2.position.y + (ball.size.width * 1.1) * 1.0)
         pin7.name = "pin_7"
-        
         //物理演算プロパティ
         pin7.physicsBody = SKPhysicsBody(circleOfRadius: pin.size.width / 3.0)
         pin7.physicsBody?.isDynamic = false
@@ -565,9 +597,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         pin7.physicsBody?.restitution = 0.7 //反発係数
         
         pin8 = SKSpriteNode(texture: pinTexture)
-        pin8.position = CGPoint(x: pin2.position.x - (ball.size.width * 1.5) * 2.0, y: pin2.position.y + (ball.size.width * 1.1) * 1.0)
         pin8.name = "pin_8"
-        
         //物理演算プロパティ
         pin8.physicsBody = SKPhysicsBody(circleOfRadius: pin.size.width / 3.0)
         pin8.physicsBody?.isDynamic = false
@@ -575,9 +605,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         pin8.physicsBody?.restitution = 0.7 //反発係数
         
         pin9 = SKSpriteNode(texture: pinTexture)
-        pin9.position = CGPoint(x: pin2.position.x - (ball.size.width * 1.5) * 3.0, y: pin2.position.y + (ball.size.width * 1.1) * 1.0)
         pin9.name = "pin_9"
-        
         //物理演算プロパティ
         pin9.physicsBody = SKPhysicsBody(circleOfRadius: pin.size.width / 3.0)
         pin9.physicsBody?.isDynamic = false
@@ -585,14 +613,123 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         pin9.physicsBody?.restitution = 0.7 //反発係数
         
         pin10 = SKSpriteNode(texture: pinTexture)
-        pin10.position = CGPoint(x: pin2.position.x - (ball.size.width * 1.5) * 2.5, y: pin2.position.y - (ball.size.width * 1.1) * 1.0)
-        pin10.name = "pin_7"
-        
+        pin10.name = "pin_10"
         //物理演算プロパティ
         pin10.physicsBody = SKPhysicsBody(circleOfRadius: pin.size.width / 3.0)
         pin10.physicsBody?.isDynamic = false
         pin10.physicsBody?.friction = 0.0    //摩擦係数
         pin10.physicsBody?.restitution = 0.7 //反発係数
+        
+        pin11 = SKSpriteNode(texture: pinTexture)
+        pin11.name = "pin_11"
+        //物理演算プロパティ
+        pin11.physicsBody = SKPhysicsBody(circleOfRadius: pin.size.width / 3.0)
+        pin11.physicsBody?.isDynamic = false
+        pin11.physicsBody?.friction = 0.0    //摩擦係数
+        pin11.physicsBody?.restitution = 0.7 //反発係数
+        
+        pin12 = SKSpriteNode(texture: pinTexture)
+        pin12.name = "pin_12"
+        //物理演算プロパティ
+        pin12.physicsBody = SKPhysicsBody(circleOfRadius: pin.size.width / 3.0)
+        pin12.physicsBody?.isDynamic = false
+        pin12.physicsBody?.friction = 0.0    //摩擦係数
+        pin12.physicsBody?.restitution = 0.7 //反発係数
+        
+        pin13 = SKSpriteNode(texture: pinTexture)
+        pin13.name = "pin_13"
+        //物理演算プロパティ
+        pin13.physicsBody = SKPhysicsBody(circleOfRadius: pin.size.width / 3.0)
+        pin13.physicsBody?.isDynamic = false
+        pin13.physicsBody?.friction = 0.0    //摩擦係数
+        pin13.physicsBody?.restitution = 0.7 //反発係数
+        
+        pin14 = SKSpriteNode(texture: pinTexture)
+        pin14.name = "pin_14"
+        //物理演算プロパティ
+        pin14.physicsBody = SKPhysicsBody(circleOfRadius: pin.size.width / 3.0)
+        pin14.physicsBody?.isDynamic = false
+        pin14.physicsBody?.friction = 0.0    //摩擦係数
+        pin14.physicsBody?.restitution = 0.7 //反発係数
+        
+        pin15 = SKSpriteNode(texture: pinTexture)
+        pin15.name = "pin_15"
+        //物理演算プロパティ
+        pin15.physicsBody = SKPhysicsBody(circleOfRadius: pin.size.width / 3.0)
+        pin15.physicsBody?.isDynamic = false
+        pin15.physicsBody?.friction = 0.0    //摩擦係数
+        pin15.physicsBody?.restitution = 0.7 //反発係数
+        
+        pin16 = SKSpriteNode(texture: pinTexture)
+        pin16.name = "pin_16"
+        //物理演算プロパティ
+        pin16.physicsBody = SKPhysicsBody(circleOfRadius: pin.size.width / 3.0)
+        pin16.physicsBody?.isDynamic = false
+        pin16.physicsBody?.friction = 0.0    //摩擦係数
+        pin16.physicsBody?.restitution = 0.7 //反発係数
+        
+        pin17 = SKSpriteNode(texture: pinTexture)
+        pin17.name = "pin_17"
+        //物理演算プロパティ
+        pin17.physicsBody = SKPhysicsBody(circleOfRadius: pin.size.width / 3.0)
+        pin17.physicsBody?.isDynamic = false
+        pin17.physicsBody?.friction = 0.0    //摩擦係数
+        pin17.physicsBody?.restitution = 0.7 //反発係数
+        
+        pin18 = SKSpriteNode(texture: pinTexture)
+        pin18.name = "pin_18"
+        //物理演算プロパティ
+        pin18.physicsBody = SKPhysicsBody(circleOfRadius: pin.size.width / 3.0)
+        pin18.physicsBody?.isDynamic = false
+        pin18.physicsBody?.friction = 0.0    //摩擦係数
+        pin18.physicsBody?.restitution = 0.7 //反発係数
+        
+        pin19 = SKSpriteNode(texture: pinTexture)
+        pin19.name = "pin_19"
+        //物理演算プロパティ
+        pin19.physicsBody = SKPhysicsBody(circleOfRadius: pin.size.width / 3.0)
+        pin19.physicsBody?.isDynamic = false
+        pin19.physicsBody?.friction = 0.0    //摩擦係数
+        pin19.physicsBody?.restitution = 0.7 //反発係数
+        
+        pin20 = SKSpriteNode(texture: pinTexture)
+        pin20.name = "pin_20"
+        //物理演算プロパティ
+        pin20.physicsBody = SKPhysicsBody(circleOfRadius: pin.size.width / 3.0)
+        pin20.physicsBody?.isDynamic = false
+        pin20.physicsBody?.friction = 0.0    //摩擦係数
+        pin20.physicsBody?.restitution = 0.7 //反発係数
+        
+        pin21 = SKSpriteNode(texture: pinTexture)
+        pin21.name = "pin_21"
+        //物理演算プロパティ
+        pin21.physicsBody = SKPhysicsBody(circleOfRadius: pin.size.width / 3.0)
+        pin21.physicsBody?.isDynamic = false
+        pin21.physicsBody?.friction = 0.0    //摩擦係数
+        pin21.physicsBody?.restitution = 0.7 //反発係数
+        
+        
+        //ピンの位置設定
+        pin2.position = CGPoint(x: self.frame.size.width / 2, y: self.frame.size.height * 0.8 + ball.size.height)
+        pin3.position = CGPoint(x: pin2.position.x + (ball.size.width * 1.5) * 1.0, y: pin2.position.y + (ball.size.width * 1.1) * 1.0)
+        pin4.position = CGPoint(x: pin2.position.x + (ball.size.width * 1.5) * 2.0, y: pin2.position.y + (ball.size.width * 1.1) * 1.0)
+        pin5.position = CGPoint(x: pin2.position.x + (ball.size.width * 1.5) * 3.0, y: pin2.position.y + (ball.size.width * 1.1) * 1.0)
+        pin6.position = CGPoint(x: pin2.position.x + (ball.size.width * 1.5) * 3.5, y: pin2.position.y - (ball.size.width * 1.1) * 1.0)
+        pin7.position = CGPoint(x: pin2.position.x - (ball.size.width * 1.5) * 1.0, y: pin2.position.y + (ball.size.width * 1.1) * 1.0)
+        pin8.position = CGPoint(x: pin2.position.x - (ball.size.width * 1.5) * 2.0, y: pin2.position.y + (ball.size.width * 1.1) * 1.0)
+        pin9.position = CGPoint(x: pin2.position.x - (ball.size.width * 1.5) * 3.0, y: pin2.position.y + (ball.size.width * 1.1) * 1.0)
+        pin10.position = CGPoint(x: pin2.position.x - (ball.size.width * 1.5) * 3.5, y: pin2.position.y - (ball.size.width * 1.1) * 1.0)
+        pin11.position = CGPoint(x: pin2.position.x + (ball.size.width * 1.5) * 1.5, y: pin2.position.y - (ball.size.width * 1.1) * 1.0)
+        pin12.position = CGPoint(x: self.frame.size.width / 2, y: self.frame.size.height * 0.5 + ball.size.height)
+        pin13.position = CGPoint(x: pin12.position.x + (ball.size.width * 1.5) * 1.0, y: pin12.position.y + (ball.size.width * 1.1) * 1.0)
+        pin14.position = CGPoint(x: pin12.position.x + (ball.size.width * 1.5) * 2.0, y: pin12.position.y + (ball.size.width * 1.1) * 1.0)
+        pin15.position = CGPoint(x: pin12.position.x + (ball.size.width * 1.5) * 3.0, y: pin12.position.y + (ball.size.width * 1.1) * 1.0)
+        pin16.position = CGPoint(x: pin12.position.x + (ball.size.width * 1.5) * 3.5, y: pin12.position.y - (ball.size.width * 1.1) * 1.0)
+        pin17.position = CGPoint(x: pin12.position.x - (ball.size.width * 1.5) * 1.0, y: pin12.position.y + (ball.size.width * 1.1) * 1.0)
+        pin18.position = CGPoint(x: pin12.position.x - (ball.size.width * 1.5) * 2.0, y: pin12.position.y + (ball.size.width * 1.1) * 1.0)
+        pin19.position = CGPoint(x: pin12.position.x - (ball.size.width * 1.5) * 3.0, y: pin12.position.y + (ball.size.width * 1.1) * 1.0)
+        pin20.position = CGPoint(x: pin12.position.x - (ball.size.width * 1.5) * 3.5, y: pin12.position.y - (ball.size.width * 1.1) * 1.0)
+        pin21.position = CGPoint(x: pin12.position.x + (ball.size.width * 1.5) * 1.5, y: pin12.position.y - (ball.size.width * 1.1) * 1.0)
         
         addChild(pin)
         addChild(pin2)
@@ -604,6 +741,17 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         addChild(pin8)
         addChild(pin9)
         addChild(pin10)
+        addChild(pin11)
+        addChild(pin12)
+        addChild(pin13)
+        addChild(pin14)
+        addChild(pin15)
+        addChild(pin16)
+        addChild(pin17)
+        addChild(pin18)
+        addChild(pin19)
+        addChild(pin20)
+        addChild(pin21)
     }
     
     func setcue(){
@@ -619,11 +767,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         cue.physicsBody = SKPhysicsBody(texture: cueTexture, size: cue.size)
         cue.physicsBody?.isDynamic = false
         cue.physicsBody?.friction = 0.0    //摩擦係数
-        cue.physicsBody?.restitution = 0.5 //反発係数
+        cue.physicsBody?.restitution = 0.1 //反発係数
         cue.physicsBody?.allowsRotation = false
         cue.physicsBody?.categoryBitMask = ballCategory
         cue.physicsBody?.collisionBitMask = ballCategory
-        cue.physicsBody?.mass = (ball.physicsBody?.mass)! * 10
+        cue.physicsBody?.mass = (pin.physicsBody?.mass)! * 100
         
         let jointTexture = SKTexture(imageNamed: "Ball")
         jointTexture.filteringMode = SKTextureFilteringMode.nearest
@@ -646,7 +794,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         joint.frequency = 7.0
         
         //伸縮の減衰を設定する
-        joint.damping = 1.0
+        joint.damping = 0.8
         
         
         addChild(cue_joint)
@@ -684,7 +832,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         hall = SKSpriteNode(texture: hallTexture)
         hall.size = CGSize(width: ball.size.width * 1.1, height: ball.size.height * 1.1)
-        hall.position = CGPoint(x: self.frame.size.width / 2, y: self.frame.size.height / 2)
+        hall.position = CGPoint(x: self.frame.size.width * 0.5, y: self.frame.size.height / 2)
         hall.name = "hall5"
         
         //物理演算プロパティ
@@ -695,7 +843,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         hall2 = SKSpriteNode(texture: hallTexture)
         hall2.size = CGSize(width: ball.size.width * 1.1, height: ball.size.height * 1.1)
-        hall2.position = CGPoint(x: self.frame.size.width / 1.5, y: self.frame.size.height / 2)
+        hall2.position = CGPoint(x: self.frame.size.width * 0.75, y: self.frame.size.height / 2)
         hall2.name = "hall5"
         
         //物理演算プロパティ
@@ -704,10 +852,21 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         hall2.physicsBody?.categoryBitMask = hall5Category
         hall2.physicsBody?.contactTestBitMask = ballCategory
         
+        hall4 = SKSpriteNode(texture: hallTexture)
+        hall4.size = CGSize(width: ball.size.width * 1.1, height: ball.size.height * 1.1)
+        hall4.position = CGPoint(x: self.frame.size.width * 0.25, y: self.frame.size.height / 2)
+        hall4.name = "hall5"
+        
+        //物理演算プロパティ
+        hall4.physicsBody = SKPhysicsBody(circleOfRadius: pin.size.width / 3.0)
+        hall4.physicsBody?.isDynamic = false
+        hall4.physicsBody?.categoryBitMask = hall5Category
+        hall4.physicsBody?.contactTestBitMask = ballCategory
+        
         hall3 = SKSpriteNode(texture: hall15Texture)
         hall3.size = CGSize(width: ball.size.width * 1.1, height: ball.size.height * 1.1)
         hall3.position = CGPoint(x: self.frame.size.width / 1.5, y: self.frame.size.height / 2 - hall2.size.height)
-        hall3.name = "hall5"
+        hall3.name = "hall15"
         
         //物理演算プロパティ
         hall3.physicsBody = SKPhysicsBody(circleOfRadius: pin.size.width / 3.0)
@@ -715,9 +874,26 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         hall3.physicsBody?.categoryBitMask = hall15Category
         hall3.physicsBody?.contactTestBitMask = ballCategory
         
+        addChild(hall4)
         addChild(hall3)
         addChild(hall2)
         addChild(hall)
         
+    }
+    
+    func setscore(){
+        let ballTexture = SKTexture(imageNamed: "star")
+        let scoreball = SKSpriteNode(texture: ballTexture)
+        scoreball.position = CGPoint(x: ballTexture.size().width * 0.5, y: myButton.frame.height * 1.1 + ballTexture.size().height / 2)
+        addChild(scoreball)
+        
+        ballcountnode = SKLabelNode()
+        ballcountnode.fontColor = UIColor.white
+        ballcountnode.fontSize = ballTexture.size().height
+        ballcountnode.position = CGPoint(x: ballTexture.size().width * 1.5, y: myButton.frame.height * 1.1)
+        ballcountnode.zPosition = 100 //一番手前に表示
+        ballcountnode.horizontalAlignmentMode = SKLabelHorizontalAlignmentMode.left
+        ballcountnode.text = "×\(ballcount)"
+        addChild(ballcountnode)
     }
 }
