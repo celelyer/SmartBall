@@ -230,14 +230,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     //画面をタップした時に呼ばれる
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        
         //キューを一度isDynamic = false にして引っ張りやすくする
         if cue.physicsBody?.isDynamic == true {
             cue.physicsBody?.isDynamic = false
         }
         
         tap_point = touches.first!.location(in: self)
-        //setball()
+        let touchedNode = self.atPoint(tap_point) as? SKSpriteNode
+        print("tap:\(String(describing: touchedNode?.name))")
         
     }
     
