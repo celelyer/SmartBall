@@ -14,7 +14,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     var timer: Timer!
     var count = 0
-    var ballInterbal = 0.3 //ボールが排出される間隔(秒)
+    var ballInterbal = 0.2 //ボールが排出される間隔(秒)
     var ballcount = 0   //ボールの数
     var ballcountnode:SKLabelNode!
     
@@ -47,6 +47,64 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var pin19:SKSpriteNode!
     var pin20:SKSpriteNode!
     var pin21:SKSpriteNode!
+    var pin22:SKSpriteNode!
+    var pin23:SKSpriteNode!
+    var pin24:SKSpriteNode!
+    var pin25:SKSpriteNode!
+    var pin26:SKSpriteNode!
+    var pin27:SKSpriteNode!
+    var pin28:SKSpriteNode!
+    var pin29:SKSpriteNode!
+    var pin30:SKSpriteNode!
+    var pin31:SKSpriteNode!
+    var pin32:SKSpriteNode!
+    var pin33:SKSpriteNode!
+    var pin34:SKSpriteNode!
+    var pin35:SKSpriteNode!
+    var pin36:SKSpriteNode!
+    var pin37:SKSpriteNode!
+    var pin38:SKSpriteNode!
+    var pin39:SKSpriteNode!
+    var pin40:SKSpriteNode!
+    var pin41:SKSpriteNode!
+    var pin42:SKSpriteNode!
+    var pin43:SKSpriteNode!
+    var pin44:SKSpriteNode!
+    var pin45:SKSpriteNode!
+    var pin46:SKSpriteNode!
+    var pin47:SKSpriteNode!
+    var pin48:SKSpriteNode!
+    var pin49:SKSpriteNode!
+    var pin50:SKSpriteNode!
+    var pin51:SKSpriteNode!
+    var pin52:SKSpriteNode!
+    var pin53:SKSpriteNode!
+    var pin54:SKSpriteNode!
+    var pin55:SKSpriteNode!
+    var pin56:SKSpriteNode!
+    var pin57:SKSpriteNode!
+    var pin58:SKSpriteNode!
+    var pin59:SKSpriteNode!
+    var pin60:SKSpriteNode!
+    var pin61:SKSpriteNode!
+    var pin62:SKSpriteNode!
+    var pin63:SKSpriteNode!
+    var pin64:SKSpriteNode!
+    var pin65:SKSpriteNode!
+    var pin66:SKSpriteNode!
+    var pin67:SKSpriteNode!
+    var pin68:SKSpriteNode!
+    var pin69:SKSpriteNode!
+    var pin70:SKSpriteNode!
+    var pin71:SKSpriteNode!
+    var pin72:SKSpriteNode!
+    var pin73:SKSpriteNode!
+    var pin74:SKSpriteNode!
+    var pin75:SKSpriteNode!
+    var pin76:SKSpriteNode!
+    var pin77:SKSpriteNode!
+    var pin78:SKSpriteNode!
+    var pin79:SKSpriteNode!
     var curve:SKSpriteNode!
     var curve2:SKSpriteNode!
     var cue:SKSpriteNode!
@@ -55,6 +113,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var hall2:SKSpriteNode!
     var hall3:SKSpriteNode!
     var hall4:SKSpriteNode!
+    var hall5:SKSpriteNode!
+    var hall6:SKSpriteNode!
+    var hall7:SKSpriteNode!
+    var hall8:SKSpriteNode!
     
     var launch:SKSpriteNode!      //発射台
     var out:SKNode!                 //発射台出口
@@ -69,6 +131,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     let deleteCategory: UInt32 = 1 << 4
     let hall5Category: UInt32 = 1 << 5
     let hall15Category: UInt32 = 1 << 6
+    let hall10Category: UInt32 = 1 << 7
     
     
     // SKView上にシーンが表示されたときに呼ばれるメソッド
@@ -134,10 +197,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             
         })
         setwall()
+        sethall()
         setpin()
         setcue()
         setpoint()
-        sethall()
+        
 
 
         
@@ -173,6 +237,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     //やり直しボタン
     @objc func onClickMyButton(sender : UIButton){
         removeAllChildren()
+        
+        ballcount = 0
         
         // 背景色を設定
         backgroundColor = UIColor(red: 0.0, green: 0.0, blue: 0.0, alpha: 1.0)
@@ -388,6 +454,50 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 })
                 
             }
+        }else if (contact.bodyA.categoryBitMask & hall10Category) == hall10Category || (contact.bodyB.categoryBitMask & hall10Category) == hall10Category {
+            if (contact.bodyA.categoryBitMask & ballCategory) == ballCategory { //bodyAがボールの時
+                contact.bodyA.node?.removeFromParent()
+                ballcount -= 1
+                ballcountnode.text = String("×\(ballcount)")
+                print("玉\(ballcount)個")
+                count += 10
+                timer = Timer.scheduledTimer(withTimeInterval: ballInterbal, repeats: true, block: { (timer) in
+                    
+                    if self.timer != nil{
+                        return
+                    }else{
+                        if self.count <= 0{
+                            self.timer = nil
+                        }else{
+                            self.setball()
+                            self.count -= 1
+                        }
+                    }
+                    
+                })
+                
+            }else{ //bodyBがボールの時
+                contact.bodyB.node?.removeFromParent()
+                ballcount -= 1
+                ballcountnode.text = String("×\(ballcount)")
+                print("玉\(ballcount)個")
+                count += 10
+                timer = Timer.scheduledTimer(withTimeInterval: ballInterbal, repeats: true, block: { (timer) in
+                    
+                    if self.timer != nil{
+                        return
+                    }else{
+                        if self.count <= 0{
+                            self.timer = nil
+                        }else{
+                            self.setball()
+                            self.count -= 1
+                        }
+                    }
+                    
+                })
+                
+            }
         }
     }
 
@@ -547,6 +657,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         pin.physicsBody?.isDynamic = false
         pin.physicsBody?.friction = 0.0    //摩擦係数
         pin.physicsBody?.restitution = 0.7 //反発係数
+        pin.zPosition = 150
         
         pin2 = SKSpriteNode(texture: pinTexture)
         pin2.name = "pin_2"
@@ -708,28 +819,627 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         pin21.physicsBody?.friction = 0.0    //摩擦係数
         pin21.physicsBody?.restitution = 0.7 //反発係数
         
+        pin22 = SKSpriteNode(texture: pinTexture)
+        pin22.name = "pin_22"
+        //物理演算プロパティ
+        pin22.physicsBody = SKPhysicsBody(circleOfRadius: pin.size.width / 3.0)
+        pin22.physicsBody?.isDynamic = false
+        pin22.physicsBody?.friction = 0.0    //摩擦係数
+        pin22.physicsBody?.restitution = 0.7 //反発係数
+        
+        pin23 = SKSpriteNode(texture: pinTexture)
+        pin23.name = "pin_23"
+        //物理演算プロパティ
+        pin23.physicsBody = SKPhysicsBody(circleOfRadius: pin.size.width / 3.0)
+        pin23.physicsBody?.isDynamic = false
+        pin23.physicsBody?.friction = 0.0    //摩擦係数
+        pin23.physicsBody?.restitution = 0.7 //反発係数
+        
+        pin24 = SKSpriteNode(texture: pinTexture)
+        pin24.name = "pin_24"
+        //物理演算プロパティ
+        pin24.physicsBody = SKPhysicsBody(circleOfRadius: pin.size.width / 3.0)
+        pin24.physicsBody?.isDynamic = false
+        pin24.physicsBody?.friction = 0.0    //摩擦係数
+        pin24.physicsBody?.restitution = 0.7 //反発係数
+        
+        pin25 = SKSpriteNode(texture: pinTexture)
+        pin25.name = "pin_25"
+        //物理演算プロパティ
+        pin25.physicsBody = SKPhysicsBody(circleOfRadius: pin.size.width / 3.0)
+        pin25.physicsBody?.isDynamic = false
+        pin25.physicsBody?.friction = 0.0    //摩擦係数
+        pin25.physicsBody?.restitution = 0.7 //反発係数
+        
+        pin26 = SKSpriteNode(texture: pinTexture)
+        pin26.name = "pin_26"
+        //物理演算プロパティ
+        pin26.physicsBody = SKPhysicsBody(circleOfRadius: pin.size.width / 3.0)
+        pin26.physicsBody?.isDynamic = false
+        pin26.physicsBody?.friction = 0.0    //摩擦係数
+        pin26.physicsBody?.restitution = 0.7 //反発係数
+        
+        pin27 = SKSpriteNode(texture: pinTexture)
+        pin27.name = "pin_27"
+        //物理演算プロパティ
+        pin27.physicsBody = SKPhysicsBody(circleOfRadius: pin.size.width / 3.0)
+        pin27.physicsBody?.isDynamic = false
+        pin27.physicsBody?.friction = 0.0    //摩擦係数
+        pin27.physicsBody?.restitution = 0.7 //反発係数
+        
+        pin28 = SKSpriteNode(texture: pinTexture)
+        pin28.name = "pin_28"
+        //物理演算プロパティ
+        pin28.physicsBody = SKPhysicsBody(circleOfRadius: pin.size.width / 3.0)
+        pin28.physicsBody?.isDynamic = false
+        pin28.physicsBody?.friction = 0.0    //摩擦係数
+        pin28.physicsBody?.restitution = 0.7 //反発係数
+        
+        pin29 = SKSpriteNode(texture: pinTexture)
+        pin29.name = "pin_29"
+        //物理演算プロパティ
+        pin29.physicsBody = SKPhysicsBody(circleOfRadius: pin.size.width / 3.0)
+        pin29.physicsBody?.isDynamic = false
+        pin29.physicsBody?.friction = 0.0    //摩擦係数
+        pin29.physicsBody?.restitution = 0.7 //反発係数
+        
+        pin30 = SKSpriteNode(texture: pinTexture)
+        pin30.position = CGPoint(x: ball.size.width / 1.5, y: self.frame.size.height * 0.8)
+        pin30.name = "pin_30"
+        //物理演算プロパティ
+        pin30.physicsBody = SKPhysicsBody(circleOfRadius: pin.size.width / 3.0)
+        pin30.physicsBody?.isDynamic = false
+        pin30.physicsBody?.friction = 0.0    //摩擦係数
+        pin30.physicsBody?.restitution = 0.7 //反発係数
+        
+        pin31 = SKSpriteNode(texture: pinTexture)
+        pin31.name = "pin_31"
+        //物理演算プロパティ
+        pin31.physicsBody = SKPhysicsBody(circleOfRadius: pin.size.width / 3.0)
+        pin31.physicsBody?.isDynamic = false
+        pin31.physicsBody?.friction = 0.0    //摩擦係数
+        pin31.physicsBody?.restitution = 0.7 //反発係数
+        
+        pin32 = SKSpriteNode(texture: pinTexture)
+        pin32.name = "pin_32"
+        //物理演算プロパティ
+        pin32.physicsBody = SKPhysicsBody(circleOfRadius: pin.size.width / 3.0)
+        pin32.physicsBody?.isDynamic = false
+        pin32.physicsBody?.friction = 0.0    //摩擦係数
+        pin32.physicsBody?.restitution = 0.7 //反発係数
+        
+        pin33 = SKSpriteNode(texture: pinTexture)
+        pin33.name = "pin_33"
+        //物理演算プロパティ
+        pin33.physicsBody = SKPhysicsBody(circleOfRadius: pin.size.width / 3.0)
+        pin33.physicsBody?.isDynamic = false
+        pin33.physicsBody?.friction = 0.0    //摩擦係数
+        pin33.physicsBody?.restitution = 0.7 //反発係数
+        
+        pin34 = SKSpriteNode(texture: pinTexture)
+        pin34.name = "pin_34"
+        //物理演算プロパティ
+        pin34.physicsBody = SKPhysicsBody(circleOfRadius: pin.size.width / 3.0)
+        pin34.physicsBody?.isDynamic = false
+        pin34.physicsBody?.friction = 0.0    //摩擦係数
+        pin34.physicsBody?.restitution = 0.7 //反発係数
+       
+        pin35 = SKSpriteNode(texture: pinTexture)
+        pin35.name = "pin_35"
+        //物理演算プロパティ
+        pin35.physicsBody = SKPhysicsBody(circleOfRadius: pin.size.width / 3.0)
+        pin35.physicsBody?.isDynamic = false
+        pin35.physicsBody?.friction = 0.0    //摩擦係数
+        pin35.physicsBody?.restitution = 0.7 //反発係数
+        
+        pin36 = SKSpriteNode(texture: pinTexture)
+        pin36.name = "pin_36"
+        //物理演算プロパティ
+        pin36.physicsBody = SKPhysicsBody(circleOfRadius: pin.size.width / 3.0)
+        pin36.physicsBody?.isDynamic = false
+        pin36.physicsBody?.friction = 0.0    //摩擦係数
+        pin36.physicsBody?.restitution = 0.7 //反発係数
+        
+        pin37 = SKSpriteNode(texture: pinTexture)
+        pin37.name = "pin_37"
+        //物理演算プロパティ
+        pin37.physicsBody = SKPhysicsBody(circleOfRadius: pin.size.width / 3.0)
+        pin37.physicsBody?.isDynamic = false
+        pin37.physicsBody?.friction = 0.0    //摩擦係数
+        pin37.physicsBody?.restitution = 0.7 //反発係数
+        
+        pin38 = SKSpriteNode(texture: pinTexture)
+        pin38.name = "pin_38"
+        //物理演算プロパティ
+        pin38.physicsBody = SKPhysicsBody(circleOfRadius: pin.size.width / 3.0)
+        pin38.physicsBody?.isDynamic = false
+        pin38.physicsBody?.friction = 0.0    //摩擦係数
+        pin38.physicsBody?.restitution = 0.7 //反発係数
+        
+        pin39 = SKSpriteNode(texture: pinTexture)
+        pin39.name = "pin_39"
+        //物理演算プロパティ
+        pin39.physicsBody = SKPhysicsBody(circleOfRadius: pin.size.width / 3.0)
+        pin39.physicsBody?.isDynamic = false
+        pin39.physicsBody?.friction = 0.0    //摩擦係数
+        pin39.physicsBody?.restitution = 0.7 //反発係数
+        
+        pin40 = SKSpriteNode(texture: pinTexture)
+        pin40.position = CGPoint(x: ball.size.width / 1.5, y: self.frame.size.height * 0.8)
+        pin40.name = "pin_40"
+        //物理演算プロパティ
+        pin40.physicsBody = SKPhysicsBody(circleOfRadius: pin.size.width / 3.0)
+        pin40.physicsBody?.isDynamic = false
+        pin40.physicsBody?.friction = 0.0    //摩擦係数
+        pin40.physicsBody?.restitution = 0.7 //反発係数
+        
+        pin41 = SKSpriteNode(texture: pinTexture)
+        pin41.name = "pin_41"
+        //物理演算プロパティ
+        pin41.physicsBody = SKPhysicsBody(circleOfRadius: pin.size.width / 3.0)
+        pin41.physicsBody?.isDynamic = false
+        pin41.physicsBody?.friction = 0.0    //摩擦係数
+        pin41.physicsBody?.restitution = 0.7 //反発係数
+        
+        pin42 = SKSpriteNode(texture: pinTexture)
+        pin42.name = "pin_42"
+        //物理演算プロパティ
+        pin42.physicsBody = SKPhysicsBody(circleOfRadius: pin.size.width / 3.0)
+        pin42.physicsBody?.isDynamic = false
+        pin42.physicsBody?.friction = 0.0    //摩擦係数
+        pin42.physicsBody?.restitution = 0.7 //反発係数
+        
+        pin43 = SKSpriteNode(texture: pinTexture)
+        pin43.name = "pin_43"
+        //物理演算プロパティ
+        pin43.physicsBody = SKPhysicsBody(circleOfRadius: pin.size.width / 3.0)
+        pin43.physicsBody?.isDynamic = false
+        pin43.physicsBody?.friction = 0.0    //摩擦係数
+        pin43.physicsBody?.restitution = 0.7 //反発係数
+        
+        pin44 = SKSpriteNode(texture: pinTexture)
+        pin44.name = "pin_44"
+        //物理演算プロパティ
+        pin44.physicsBody = SKPhysicsBody(circleOfRadius: pin.size.width / 3.0)
+        pin44.physicsBody?.isDynamic = false
+        pin44.physicsBody?.friction = 0.0    //摩擦係数
+        pin44.physicsBody?.restitution = 0.7 //反発係数
+        
+        pin45 = SKSpriteNode(texture: pinTexture)
+        pin45.name = "pin_45"
+        //物理演算プロパティ
+        pin45.physicsBody = SKPhysicsBody(circleOfRadius: pin.size.width / 3.0)
+        pin45.physicsBody?.isDynamic = false
+        pin45.physicsBody?.friction = 0.0    //摩擦係数
+        pin45.physicsBody?.restitution = 0.7 //反発係数
+        
+        pin46 = SKSpriteNode(texture: pinTexture)
+        pin46.name = "pin_46"
+        //物理演算プロパティ
+        pin46.physicsBody = SKPhysicsBody(circleOfRadius: pin.size.width / 3.0)
+        pin46.physicsBody?.isDynamic = false
+        pin46.physicsBody?.friction = 0.0    //摩擦係数
+        pin46.physicsBody?.restitution = 0.7 //反発係数
+        
+        pin47 = SKSpriteNode(texture: pinTexture)
+        pin47.name = "pin_47"
+        //物理演算プロパティ
+        pin47.physicsBody = SKPhysicsBody(circleOfRadius: pin.size.width / 3.0)
+        pin47.physicsBody?.isDynamic = false
+        pin47.physicsBody?.friction = 0.0    //摩擦係数
+        pin47.physicsBody?.restitution = 0.7 //反発係数
+        
+        pin48 = SKSpriteNode(texture: pinTexture)
+        pin48.name = "pin_48"
+        //物理演算プロパティ
+        pin48.physicsBody = SKPhysicsBody(circleOfRadius: pin.size.width / 3.0)
+        pin48.physicsBody?.isDynamic = false
+        pin48.physicsBody?.friction = 0.0    //摩擦係数
+        pin48.physicsBody?.restitution = 0.7 //反発係数
+        
+        pin49 = SKSpriteNode(texture: pinTexture)
+        pin49.name = "pin_49"
+        //物理演算プロパティ
+        pin49.physicsBody = SKPhysicsBody(circleOfRadius: pin.size.width / 3.0)
+        pin49.physicsBody?.isDynamic = false
+        pin49.physicsBody?.friction = 0.0    //摩擦係数
+        pin49.physicsBody?.restitution = 0.7 //反発係数
+        
+        pin50 = SKSpriteNode(texture: pinTexture)
+        pin50.position = CGPoint(x: ball.size.width / 1.5, y: self.frame.size.height * 0.8)
+        pin50.name = "pin_50"
+        //物理演算プロパティ
+        pin50.physicsBody = SKPhysicsBody(circleOfRadius: pin.size.width / 3.0)
+        pin50.physicsBody?.isDynamic = false
+        pin50.physicsBody?.friction = 0.0    //摩擦係数
+        pin50.physicsBody?.restitution = 0.7 //反発係数
+        
+        pin51 = SKSpriteNode(texture: pinTexture)
+        pin51.position = CGPoint(x: ball.size.width / 1.5, y: self.frame.size.height * 0.8)
+        pin51.name = "pin_51"
+        //物理演算プロパティ
+        pin51.physicsBody = SKPhysicsBody(circleOfRadius: pin.size.width / 3.0)
+        pin51.physicsBody?.isDynamic = false
+        pin51.physicsBody?.friction = 0.0    //摩擦係数
+        pin51.physicsBody?.restitution = 0.7 //反発係数
+        
+        pin52 = SKSpriteNode(texture: pinTexture)
+        pin52.name = "pin_52"
+        //物理演算プロパティ
+        pin52.physicsBody = SKPhysicsBody(circleOfRadius: pin.size.width / 3.0)
+        pin52.physicsBody?.isDynamic = false
+        pin52.physicsBody?.friction = 0.0    //摩擦係数
+        pin52.physicsBody?.restitution = 0.7 //反発係数
+        
+        pin53 = SKSpriteNode(texture: pinTexture)
+        pin53.name = "pin_53"
+        //物理演算プロパティ
+        pin53.physicsBody = SKPhysicsBody(circleOfRadius: pin.size.width / 3.0)
+        pin53.physicsBody?.isDynamic = false
+        pin53.physicsBody?.friction = 0.0    //摩擦係数
+        pin53.physicsBody?.restitution = 0.7 //反発係数
+        
+        pin54 = SKSpriteNode(texture: pinTexture)
+        pin54.name = "pin_54"
+        //物理演算プロパティ
+        pin54.physicsBody = SKPhysicsBody(circleOfRadius: pin.size.width / 3.0)
+        pin54.physicsBody?.isDynamic = false
+        pin54.physicsBody?.friction = 0.0    //摩擦係数
+        pin54.physicsBody?.restitution = 0.7 //反発係数
+        
+        pin55 = SKSpriteNode(texture: pinTexture)
+        pin55.name = "pin_55"
+        //物理演算プロパティ
+        pin55.physicsBody = SKPhysicsBody(circleOfRadius: pin.size.width / 3.0)
+        pin55.physicsBody?.isDynamic = false
+        pin55.physicsBody?.friction = 0.0    //摩擦係数
+        pin55.physicsBody?.restitution = 0.7 //反発係数
+        
+        pin56 = SKSpriteNode(texture: pinTexture)
+        pin56.name = "pin_56"
+        //物理演算プロパティ
+        pin56.physicsBody = SKPhysicsBody(circleOfRadius: pin.size.width / 3.0)
+        pin56.physicsBody?.isDynamic = false
+        pin56.physicsBody?.friction = 0.0    //摩擦係数
+        pin56.physicsBody?.restitution = 0.7 //反発係数
+        
+        pin57 = SKSpriteNode(texture: pinTexture)
+        pin57.name = "pin_57"
+        //物理演算プロパティ
+        pin57.physicsBody = SKPhysicsBody(circleOfRadius: pin.size.width / 3.0)
+        pin57.physicsBody?.isDynamic = false
+        pin57.physicsBody?.friction = 0.0    //摩擦係数
+        pin57.physicsBody?.restitution = 0.7 //反発係数
+        
+        pin58 = SKSpriteNode(texture: pinTexture)
+        pin58.name = "pin_58"
+        //物理演算プロパティ
+        pin58.physicsBody = SKPhysicsBody(circleOfRadius: pin.size.width / 3.0)
+        pin58.physicsBody?.isDynamic = false
+        pin58.physicsBody?.friction = 0.0    //摩擦係数
+        pin58.physicsBody?.restitution = 0.7 //反発係数
+        
+        pin59 = SKSpriteNode(texture: pinTexture)
+        pin59.name = "pin_59"
+        //物理演算プロパティ
+        pin59.physicsBody = SKPhysicsBody(circleOfRadius: pin.size.width / 3.0)
+        pin59.physicsBody?.isDynamic = false
+        pin59.physicsBody?.friction = 0.0    //摩擦係数
+        pin59.physicsBody?.restitution = 0.7 //反発係数
+        
+        pin60 = SKSpriteNode(texture: pinTexture)
+        pin60.name = "pin_60"
+        //物理演算プロパティ
+        pin60.physicsBody = SKPhysicsBody(circleOfRadius: pin.size.width / 3.0)
+        pin60.physicsBody?.isDynamic = false
+        pin60.physicsBody?.friction = 0.0    //摩擦係数
+        pin60.physicsBody?.restitution = 0.7 //反発係数
+        
+        pin61 = SKSpriteNode(texture: pinTexture)
+        pin61.position = CGPoint(x: ball.size.width / 1.5, y: self.frame.size.height * 0.8)
+        pin61.name = "pin_61"
+        //物理演算プロパティ
+        pin61.physicsBody = SKPhysicsBody(circleOfRadius: pin.size.width / 3.0)
+        pin61.physicsBody?.isDynamic = false
+        pin61.physicsBody?.friction = 0.0    //摩擦係数
+        pin61.physicsBody?.restitution = 0.7 //反発係数
+        
+        pin62 = SKSpriteNode(texture: pinTexture)
+        pin62.name = "pin_62"
+        //物理演算プロパティ
+        pin62.physicsBody = SKPhysicsBody(circleOfRadius: pin.size.width / 3.0)
+        pin62.physicsBody?.isDynamic = false
+        pin62.physicsBody?.friction = 0.0    //摩擦係数
+        pin62.physicsBody?.restitution = 0.7 //反発係数
+        
+        pin63 = SKSpriteNode(texture: pinTexture)
+        pin63.name = "pin_63"
+        //物理演算プロパティ
+        pin63.physicsBody = SKPhysicsBody(circleOfRadius: pin.size.width / 3.0)
+        pin63.physicsBody?.isDynamic = false
+        pin63.physicsBody?.friction = 0.0    //摩擦係数
+        pin63.physicsBody?.restitution = 0.7 //反発係数
+        
+        pin64 = SKSpriteNode(texture: pinTexture)
+        pin64.name = "pin_64"
+        //物理演算プロパティ
+        pin64.physicsBody = SKPhysicsBody(circleOfRadius: pin.size.width / 3.0)
+        pin64.physicsBody?.isDynamic = false
+        pin64.physicsBody?.friction = 0.0    //摩擦係数
+        pin64.physicsBody?.restitution = 0.7 //反発係数
+        
+        pin65 = SKSpriteNode(texture: pinTexture)
+        pin65.name = "pin_65"
+        //物理演算プロパティ
+        pin65.physicsBody = SKPhysicsBody(circleOfRadius: pin.size.width / 3.0)
+        pin65.physicsBody?.isDynamic = false
+        pin65.physicsBody?.friction = 0.0    //摩擦係数
+        pin65.physicsBody?.restitution = 0.7 //反発係数
+        
+        pin66 = SKSpriteNode(texture: pinTexture)
+        pin66.name = "pin_66"
+        //物理演算プロパティ
+        pin66.physicsBody = SKPhysicsBody(circleOfRadius: pin.size.width / 3.0)
+        pin66.physicsBody?.isDynamic = false
+        pin66.physicsBody?.friction = 0.0    //摩擦係数
+        pin66.physicsBody?.restitution = 0.7 //反発係数
+        
+        pin67 = SKSpriteNode(texture: pinTexture)
+        pin67.name = "pin_67"
+        //物理演算プロパティ
+        pin67.physicsBody = SKPhysicsBody(circleOfRadius: pin.size.width / 3.0)
+        pin67.physicsBody?.isDynamic = false
+        pin67.physicsBody?.friction = 0.0    //摩擦係数
+        pin67.physicsBody?.restitution = 0.7 //反発係数
+        
+        pin68 = SKSpriteNode(texture: pinTexture)
+        pin68.name = "pin_68"
+        //物理演算プロパティ
+        pin68.physicsBody = SKPhysicsBody(circleOfRadius: pin.size.width / 3.0)
+        pin68.physicsBody?.isDynamic = false
+        pin68.physicsBody?.friction = 0.0    //摩擦係数
+        pin68.physicsBody?.restitution = 0.7 //反発係数
+        
+        pin69 = SKSpriteNode(texture: pinTexture)
+        pin69.name = "pin_69"
+        //物理演算プロパティ
+        pin69.physicsBody = SKPhysicsBody(circleOfRadius: pin.size.width / 3.0)
+        pin69.physicsBody?.isDynamic = false
+        pin69.physicsBody?.friction = 0.0    //摩擦係数
+        pin69.physicsBody?.restitution = 0.7 //反発係数
+        
+        pin70 = SKSpriteNode(texture: pinTexture)
+        pin70.position = CGPoint(x: ball.size.width / 1.5, y: self.frame.size.height * 0.8)
+        pin70.name = "pin_70"
+        //物理演算プロパティ
+        pin70.physicsBody = SKPhysicsBody(circleOfRadius: pin.size.width / 3.0)
+        pin70.physicsBody?.isDynamic = false
+        pin70.physicsBody?.friction = 0.0    //摩擦係数
+        pin70.physicsBody?.restitution = 0.7 //反発係数
+        
+        pin71 = SKSpriteNode(texture: pinTexture)
+        pin71.position = CGPoint(x: ball.size.width / 1.5, y: self.frame.size.height * 0.8)
+        pin71.name = "pin_71"
+        //物理演算プロパティ
+        pin71.physicsBody = SKPhysicsBody(circleOfRadius: pin.size.width / 3.0)
+        pin71.physicsBody?.isDynamic = false
+        pin71.physicsBody?.friction = 0.0    //摩擦係数
+        pin71.physicsBody?.restitution = 0.7 //反発係数
+        
+        pin72 = SKSpriteNode(texture: pinTexture)
+        pin72.name = "pin_2"
+        //物理演算プロパティ
+        pin72.physicsBody = SKPhysicsBody(circleOfRadius: pin.size.width / 3.0)
+        pin72.physicsBody?.isDynamic = false
+        pin72.physicsBody?.friction = 0.0    //摩擦係数
+        pin72.physicsBody?.restitution = 0.7 //反発係数
+        
+        pin73 = SKSpriteNode(texture: pinTexture)
+        pin73.name = "pin_3"
+        //物理演算プロパティ
+        pin73.physicsBody = SKPhysicsBody(circleOfRadius: pin.size.width / 3.0)
+        pin73.physicsBody?.isDynamic = false
+        pin73.physicsBody?.friction = 0.0    //摩擦係数
+        pin73.physicsBody?.restitution = 0.7 //反発係数
+        
+        pin74 = SKSpriteNode(texture: pinTexture)
+        pin74.name = "pin_4"
+        //物理演算プロパティ
+        pin74.physicsBody = SKPhysicsBody(circleOfRadius: pin.size.width / 3.0)
+        pin74.physicsBody?.isDynamic = false
+        pin74.physicsBody?.friction = 0.0    //摩擦係数
+        pin74.physicsBody?.restitution = 0.7 //反発係数
+        
+        pin75 = SKSpriteNode(texture: pinTexture)
+        pin75.name = "pin_5"
+        //物理演算プロパティ
+        pin75.physicsBody = SKPhysicsBody(circleOfRadius: pin.size.width / 3.0)
+        pin75.physicsBody?.isDynamic = false
+        pin75.physicsBody?.friction = 0.0    //摩擦係数
+        pin75.physicsBody?.restitution = 0.7 //反発係数
+        
+        pin76 = SKSpriteNode(texture: pinTexture)
+        pin76.name = "pin_6"
+        //物理演算プロパティ
+        pin76.physicsBody = SKPhysicsBody(circleOfRadius: pin.size.width / 3.0)
+        pin76.physicsBody?.isDynamic = false
+        pin76.physicsBody?.friction = 0.0    //摩擦係数
+        pin76.physicsBody?.restitution = 0.7 //反発係数
+        
+        pin77 = SKSpriteNode(texture: pinTexture)
+        pin77.name = "pin_7"
+        //物理演算プロパティ
+        pin77.physicsBody = SKPhysicsBody(circleOfRadius: pin.size.width / 3.0)
+        pin77.physicsBody?.isDynamic = false
+        pin77.physicsBody?.friction = 0.0    //摩擦係数
+        pin77.physicsBody?.restitution = 0.7 //反発係数
+        
+        pin78 = SKSpriteNode(texture: pinTexture)
+        pin78.name = "pin_8"
+        //物理演算プロパティ
+        pin78.physicsBody = SKPhysicsBody(circleOfRadius: pin.size.width / 3.0)
+        pin78.physicsBody?.isDynamic = false
+        pin78.physicsBody?.friction = 0.0    //摩擦係数
+        pin78.physicsBody?.restitution = 0.7 //反発係数
+        
+        pin79 = SKSpriteNode(texture: pinTexture)
+        pin79.name = "pin_9"
+        //物理演算プロパティ
+        pin79.physicsBody = SKPhysicsBody(circleOfRadius: pin.size.width / 3.0)
+        pin79.physicsBody?.isDynamic = false
+        pin79.physicsBody?.friction = 0.0    //摩擦係数
+        pin79.physicsBody?.restitution = 0.7 //反発係数
+        
+        pin2.zPosition = 150
+        pin3.zPosition = 150
+        pin4.zPosition = 150
+        pin5.zPosition = 150
+        pin6.zPosition = 150
+        pin7.zPosition = 150
+        pin8.zPosition = 150
+        pin9.zPosition = 150
+        pin10.zPosition = 150
+        pin11.zPosition = 150
+        pin12.zPosition = 150
+        pin13.zPosition = 150
+        pin14.zPosition = 150
+        pin15.zPosition = 150
+        pin16.zPosition = 150
+        pin17.zPosition = 150
+        pin18.zPosition = 150
+        pin19.zPosition = 150
+        pin20.zPosition = 150
+        pin21.zPosition = 150
+        pin22.zPosition = 150
+        pin23.zPosition = 150
+        pin24.zPosition = 150
+        pin25.zPosition = 150
+        pin26.zPosition = 150
+        pin27.zPosition = 150
+        pin28.zPosition = 150
+        pin29.zPosition = 150
+        pin30.zPosition = 150
+        pin41.zPosition = 150
+        pin42.zPosition = 150
+        pin43.zPosition = 150
+        pin44.zPosition = 150
+        pin45.zPosition = 150
+        pin46.zPosition = 150
+        pin47.zPosition = 150
+        pin48.zPosition = 150
+        pin49.zPosition = 150
+        pin50.zPosition = 150
+        pin51.zPosition = 150
+        pin52.zPosition = 150
+        pin53.zPosition = 150
+        pin54.zPosition = 150
+        pin55.zPosition = 150
+        pin56.zPosition = 150
+        pin57.zPosition = 150
+        pin58.zPosition = 150
+        pin59.zPosition = 150
+        pin60.zPosition = 150
+        pin61.zPosition = 150
+        pin62.zPosition = 150
+        pin63.zPosition = 150
+        pin64.zPosition = 150
+        pin65.zPosition = 150
+        pin66.zPosition = 150
+        pin67.zPosition = 150
+        pin68.zPosition = 150
+        pin69.zPosition = 150
+        pin70.zPosition = 150
+        pin71.zPosition = 150
+        pin72.zPosition = 150
+        pin73.zPosition = 150
+        pin74.zPosition = 150
+        pin75.zPosition = 150
+        pin76.zPosition = 150
+        pin77.zPosition = 150
+        pin78.zPosition = 150
+        pin79.zPosition = 150
         
         //ピンの位置設定
-        pin2.position = CGPoint(x: self.frame.size.width / 2, y: self.frame.size.height * 0.8 + ball.size.height)
-        pin3.position = CGPoint(x: pin2.position.x + (ball.size.width * 1.5) * 1.0, y: pin2.position.y + (ball.size.width * 1.1) * 1.0)
-        pin4.position = CGPoint(x: pin2.position.x + (ball.size.width * 1.5) * 2.0, y: pin2.position.y + (ball.size.width * 1.1) * 1.0)
-        pin5.position = CGPoint(x: pin2.position.x + (ball.size.width * 1.5) * 3.0, y: pin2.position.y + (ball.size.width * 1.1) * 1.0)
-        pin6.position = CGPoint(x: pin2.position.x + (ball.size.width * 1.5) * 3.5, y: pin2.position.y - (ball.size.width * 1.1) * 1.0)
-        pin7.position = CGPoint(x: pin2.position.x - (ball.size.width * 1.5) * 1.0, y: pin2.position.y + (ball.size.width * 1.1) * 1.0)
-        pin8.position = CGPoint(x: pin2.position.x - (ball.size.width * 1.5) * 2.0, y: pin2.position.y + (ball.size.width * 1.1) * 1.0)
-        pin9.position = CGPoint(x: pin2.position.x - (ball.size.width * 1.5) * 3.0, y: pin2.position.y + (ball.size.width * 1.1) * 1.0)
-        pin10.position = CGPoint(x: pin2.position.x - (ball.size.width * 1.5) * 3.5, y: pin2.position.y - (ball.size.width * 1.1) * 1.0)
-        pin11.position = CGPoint(x: pin2.position.x + (ball.size.width * 1.5) * 1.5, y: pin2.position.y - (ball.size.width * 1.1) * 1.0)
-        pin12.position = CGPoint(x: self.frame.size.width / 2, y: self.frame.size.height * 0.5 + ball.size.height)
-        pin13.position = CGPoint(x: pin12.position.x + (ball.size.width * 1.5) * 1.0, y: pin12.position.y + (ball.size.width * 1.1) * 1.0)
-        pin14.position = CGPoint(x: pin12.position.x + (ball.size.width * 1.5) * 2.0, y: pin12.position.y + (ball.size.width * 1.1) * 1.0)
-        pin15.position = CGPoint(x: pin12.position.x + (ball.size.width * 1.5) * 3.0, y: pin12.position.y + (ball.size.width * 1.1) * 1.0)
-        pin16.position = CGPoint(x: pin12.position.x + (ball.size.width * 1.5) * 3.5, y: pin12.position.y - (ball.size.width * 1.1) * 1.0)
-        pin17.position = CGPoint(x: pin12.position.x - (ball.size.width * 1.5) * 1.0, y: pin12.position.y + (ball.size.width * 1.1) * 1.0)
-        pin18.position = CGPoint(x: pin12.position.x - (ball.size.width * 1.5) * 2.0, y: pin12.position.y + (ball.size.width * 1.1) * 1.0)
-        pin19.position = CGPoint(x: pin12.position.x - (ball.size.width * 1.5) * 3.0, y: pin12.position.y + (ball.size.width * 1.1) * 1.0)
-        pin20.position = CGPoint(x: pin12.position.x - (ball.size.width * 1.5) * 3.5, y: pin12.position.y - (ball.size.width * 1.1) * 1.0)
-        pin21.position = CGPoint(x: pin12.position.x + (ball.size.width * 1.5) * 1.5, y: pin12.position.y - (ball.size.width * 1.1) * 1.0)
+        
+        pin2.position = CGPoint(x: hall5.position.x + ball.size.width * 0.65, y: hall5.position.y)
+        pin3.position = CGPoint(x: hall5.position.x - ball.size.width * 0.65, y: hall5.position.y)
+        pin4.position = CGPoint(x: hall5.position.x, y: hall5.position.y - ball.size.width * 0.6)
+        pin5.position = CGPoint(x: hall5.position.x, y: hall5.position.y + ball.size.width * 1.8)
+        pin6.position = CGPoint(x: hall5.position.x + ball.size.width * 0.65, y: hall5.position.y + ball.size.width * 0.6)
+        pin7.position = CGPoint(x: hall5.position.x - ball.size.width * 0.65, y: hall5.position.y + ball.size.width * 0.6)
+        pin8.position = CGPoint(x: hall5.position.x + ball.size.width * 0.6, y: hall5.position.y - pin.size.width)
+        pin9.position = CGPoint(x: hall5.position.x - ball.size.width * 0.6, y: hall5.position.y - pin.size.width)
+        pin10.position = CGPoint(x: hall3.position.x + ball.size.width * 0.65, y: hall3.position.y)
+        pin11.position = CGPoint(x: hall3.position.x - ball.size.width * 0.65, y: hall3.position.y)
+        pin12.position = CGPoint(x: hall3.position.x, y: hall3.position.y - ball.size.width * 0.6)
+        pin13.position = CGPoint(x: hall3.position.x, y: hall3.position.y + ball.size.width * 1.8 + pin.size.height)
+        pin14.position = CGPoint(x: hall3.position.x + ball.size.width * 0.65, y: hall3.position.y + ball.size.width * 0.6)
+        pin15.position = CGPoint(x: hall3.position.x - ball.size.width * 0.65, y: hall3.position.y + ball.size.width * 0.6)
+        pin16.position = CGPoint(x: hall3.position.x + ball.size.width * 0.6, y: hall3.position.y - pin.size.width)
+        pin17.position = CGPoint(x: hall3.position.x - ball.size.width * 0.6, y: hall3.position.y - pin.size.width)
+        pin18.position = CGPoint(x: hall4.position.x + ball.size.width * 0.65, y: hall.position.y)
+        pin19.position = CGPoint(x: hall4.position.x - ball.size.width * 0.65, y: hall.position.y)
+        pin20.position = CGPoint(x: hall4.position.x, y: hall.position.y - ball.size.width * 0.6)
+        pin21.position = CGPoint(x: hall4.position.x, y: hall.position.y + ball.size.width * 1.8)
+        pin22.position = CGPoint(x: hall4.position.x + ball.size.width * 0.65, y: hall.position.y + ball.size.width * 0.6)
+        pin23.position = CGPoint(x: hall4.position.x - ball.size.width * 0.65, y: hall.position.y + ball.size.width * 0.6)
+        pin24.position = CGPoint(x: hall4.position.x + ball.size.width * 0.6, y: hall.position.y - pin.size.width)
+        pin25.position = CGPoint(x: hall4.position.x - ball.size.width * 0.6, y: hall.position.y - pin.size.width)
+        pin26.position = CGPoint(x: hall2.position.x + ball.size.width * 0.65, y: hall.position.y)
+        pin27.position = CGPoint(x: hall2.position.x - ball.size.width * 0.65, y: hall.position.y)
+        pin28.position = CGPoint(x: hall2.position.x, y: hall.position.y - ball.size.width * 0.6)
+        pin29.position = CGPoint(x: hall2.position.x, y: hall.position.y + ball.size.width * 1.8)
+        pin30.position = CGPoint(x: hall2.position.x + ball.size.width * 0.65, y: hall.position.y + ball.size.width * 0.6)
+        pin31.position = CGPoint(x: hall2.position.x - ball.size.width * 0.65, y: hall.position.y + ball.size.width * 0.6)
+        pin32.position = CGPoint(x: hall2.position.x + ball.size.width * 0.6, y: hall.position.y - pin.size.width)
+        pin33.position = CGPoint(x: hall2.position.x - ball.size.width * 0.6, y: hall.position.y - pin.size.width)
+        pin34.position = CGPoint(x: hall.position.x + ball.size.width * 0.65, y: hall.position.y)
+        pin35.position = CGPoint(x: hall.position.x - ball.size.width * 0.65, y: hall.position.y)
+        pin36.position = CGPoint(x: hall.position.x, y: hall.position.y - ball.size.width * 0.6)
+        pin37.position = CGPoint(x: hall.position.x, y: hall.position.y + ball.size.width * 1.8)
+        pin38.position = CGPoint(x: hall.position.x + ball.size.width * 0.65, y: hall.position.y + ball.size.width * 0.6)
+        pin39.position = CGPoint(x: hall.position.x - ball.size.width * 0.65, y: hall.position.y + ball.size.width * 0.6)
+        pin40.position = CGPoint(x: hall.position.x + ball.size.width * 0.6, y: hall.position.y - pin.size.width)
+        pin41.position = CGPoint(x: hall.position.x - ball.size.width * 0.6, y: hall.position.y - pin.size.width)
+        pin42.position = CGPoint(x: hall6.position.x + ball.size.width * 0.65, y: hall5.position.y)
+        pin43.position = CGPoint(x: hall6.position.x - ball.size.width * 0.65, y: hall5.position.y)
+        pin44.position = CGPoint(x: hall6.position.x, y: hall5.position.y - ball.size.width * 0.6)
+        pin45.position = CGPoint(x: hall6.position.x, y: hall5.position.y + ball.size.width * 1.8)
+        pin46.position = CGPoint(x: hall6.position.x + ball.size.width * 0.65, y: hall5.position.y + ball.size.width * 0.6)
+        pin47.position = CGPoint(x: hall6.position.x - ball.size.width * 0.65, y: hall5.position.y + ball.size.width * 0.6)
+        pin48.position = CGPoint(x: hall6.position.x + ball.size.width * 0.6, y: hall5.position.y - pin.size.width)
+        pin49.position = CGPoint(x: hall6.position.x - ball.size.width * 0.6, y: hall5.position.y - pin.size.width)
+        pin50.position = CGPoint(x: hall7.position.x + ball.size.width * 0.65, y: hall7.position.y)
+        pin51.position = CGPoint(x: hall7.position.x - ball.size.width * 0.65, y: hall7.position.y)
+        pin52.position = CGPoint(x: hall7.position.x, y: hall7.position.y - ball.size.width * 0.6)
+        pin53.position = CGPoint(x: hall7.position.x, y: hall7.position.y + ball.size.width * 1.8)
+        pin54.position = CGPoint(x: hall7.position.x + ball.size.width * 0.65, y: hall7.position.y + ball.size.width * 0.6)
+        pin55.position = CGPoint(x: hall7.position.x - ball.size.width * 0.65, y: hall7.position.y + ball.size.width * 0.6)
+        pin56.position = CGPoint(x: hall7.position.x + ball.size.width * 0.6, y: hall7.position.y - pin.size.width)
+        pin57.position = CGPoint(x: hall7.position.x - ball.size.width * 0.6, y: hall7.position.y - pin.size.width)
+        pin58.position = CGPoint(x: hall8.position.x + ball.size.width * 0.65, y: hall8.position.y)
+        pin59.position = CGPoint(x: hall8.position.x - ball.size.width * 0.65, y: hall8.position.y)
+        pin60.position = CGPoint(x: hall8.position.x, y: hall8.position.y - ball.size.width * 0.6)
+        pin61.position = CGPoint(x: hall8.position.x, y: hall8.position.y + ball.size.width * 1.8)
+        pin62.position = CGPoint(x: hall8.position.x + ball.size.width * 0.65, y: hall8.position.y + ball.size.width * 0.6)
+        pin63.position = CGPoint(x: hall8.position.x - ball.size.width * 0.65, y: hall8.position.y + ball.size.width * 0.6)
+        pin64.position = CGPoint(x: hall8.position.x + ball.size.width * 0.6, y: hall8.position.y - pin.size.width)
+        pin65.position = CGPoint(x: hall8.position.x - ball.size.width * 0.6, y: hall8.position.y - pin.size.width)
+        pin66.position = CGPoint(x: wall3.position.x + wall3.size.width, y: self.frame.size.height * 0.5)
+        pin67.position = CGPoint(x: pin66.position.x + pin.size.width, y: pin66.position.y - pin.size.height)
+        pin68.position = CGPoint(x: wall.position.x - wall.size.width, y: self.frame.size.height * 0.5)
+        pin69.position = CGPoint(x: pin68.position.x - pin.size.width, y: pin68.position.y - pin.size.height)
+        
+        pin70.position = CGPoint(x: pin13.position.x + pin.size.width, y: pin13.position.y - pin.size.height)
+        pin71.position = CGPoint(x: pin13.position.x - pin.size.width, y: pin13.position.y - pin.size.height)
+        pin72.position = CGPoint(x: self.frame.size.width * 0.5, y: self.frame.size.height * 0.85 + ball.size.height * 1.6)
+        pin73.position = CGPoint(x: pin72.position.x + ball.size.width * 1.5, y: pin72.position.y)
+        pin74.position = CGPoint(x: pin73.position.x + ball.size.width * 1.5, y: pin72.position.y)
+        pin75.position = CGPoint(x: pin74.position.x + ball.size.width * 1.5, y: pin72.position.y - ball.size.height * 1.6)
+        pin76.position = CGPoint(x: pin72.position.x - ball.size.width * 1.5, y: pin72.position.y)
+        pin77.position = CGPoint(x: pin76.position.x - ball.size.width * 1.5, y: pin72.position.y)
+        pin78.position = CGPoint(x: pin77.position.x - ball.size.width * 1.5, y: pin72.position.y - ball.size.height * 1.6)
+        pin79.position = CGPoint(x: self.frame.size.width * 0.5, y: self.frame.size.height * 0.3)
         
         addChild(pin)
         addChild(pin2)
@@ -752,6 +1462,65 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         addChild(pin19)
         addChild(pin20)
         addChild(pin21)
+        addChild(pin22)
+        addChild(pin23)
+        addChild(pin24)
+        addChild(pin25)
+        addChild(pin26)
+        addChild(pin27)
+        addChild(pin28)
+        addChild(pin29)
+        addChild(pin30)
+        addChild(pin31)
+        addChild(pin32)
+        addChild(pin33)
+        addChild(pin34)
+        addChild(pin35)
+        addChild(pin36)
+        addChild(pin37)
+        addChild(pin38)
+        addChild(pin39)
+        addChild(pin40)
+        addChild(pin41)
+        addChild(pin42)
+        addChild(pin43)
+        addChild(pin44)
+        addChild(pin45)
+        addChild(pin46)
+        addChild(pin47)
+        addChild(pin48)
+        addChild(pin49)
+        addChild(pin50)
+        addChild(pin51)
+        addChild(pin52)
+        addChild(pin53)
+        addChild(pin54)
+        addChild(pin55)
+        addChild(pin56)
+        addChild(pin57)
+        addChild(pin58)
+        addChild(pin59)
+        addChild(pin60)
+        addChild(pin61)
+        addChild(pin62)
+        addChild(pin63)
+        addChild(pin64)
+        addChild(pin65)
+        addChild(pin66)
+        addChild(pin67)
+        addChild(pin68)
+        addChild(pin69)
+        addChild(pin70)
+        addChild(pin71)
+        addChild(pin72)
+        addChild(pin73)
+        addChild(pin74)
+        addChild(pin75)
+        addChild(pin76)
+        addChild(pin77)
+        addChild(pin78)
+        addChild(pin79)
+        
     }
     
     func setcue(){
@@ -827,53 +1596,103 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     func sethall(){
         let hallTexture = SKTexture(imageNamed: "hall5")
         hallTexture.filteringMode = SKTextureFilteringMode.linear
+        let hall10Texture = SKTexture(imageNamed: "hall10")
+        hall10Texture.filteringMode = SKTextureFilteringMode.linear
         let hall15Texture = SKTexture(imageNamed: "hall15")
-        hallTexture.filteringMode = SKTextureFilteringMode.linear
+        hall15Texture.filteringMode = SKTextureFilteringMode.linear
         
         hall = SKSpriteNode(texture: hallTexture)
         hall.size = CGSize(width: ball.size.width * 1.1, height: ball.size.height * 1.1)
-        hall.position = CGPoint(x: self.frame.size.width * 0.5, y: self.frame.size.height / 2)
+        hall.position = CGPoint(x: self.frame.size.width * 0.5, y: self.frame.size.height * 0.7)
+        hall.zPosition = 100
         hall.name = "hall5"
-        
         //物理演算プロパティ
-        hall.physicsBody = SKPhysicsBody(circleOfRadius: pin.size.width / 3.0)
+        hall.physicsBody = SKPhysicsBody(circleOfRadius: 1)
         hall.physicsBody?.isDynamic = false
         hall.physicsBody?.categoryBitMask = hall5Category
         hall.physicsBody?.contactTestBitMask = ballCategory
         
         hall2 = SKSpriteNode(texture: hallTexture)
         hall2.size = CGSize(width: ball.size.width * 1.1, height: ball.size.height * 1.1)
-        hall2.position = CGPoint(x: self.frame.size.width * 0.75, y: self.frame.size.height / 2)
+        hall2.position = CGPoint(x: self.frame.size.width * 0.75, y: hall.position.y)
+        hall2.zPosition = 100
         hall2.name = "hall5"
-        
         //物理演算プロパティ
-        hall2.physicsBody = SKPhysicsBody(circleOfRadius: pin.size.width / 3.0)
+        hall2.physicsBody = SKPhysicsBody(circleOfRadius: 1)
         hall2.physicsBody?.isDynamic = false
         hall2.physicsBody?.categoryBitMask = hall5Category
         hall2.physicsBody?.contactTestBitMask = ballCategory
         
-        hall4 = SKSpriteNode(texture: hallTexture)
-        hall4.size = CGSize(width: ball.size.width * 1.1, height: ball.size.height * 1.1)
-        hall4.position = CGPoint(x: self.frame.size.width * 0.25, y: self.frame.size.height / 2)
-        hall4.name = "hall5"
-        
-        //物理演算プロパティ
-        hall4.physicsBody = SKPhysicsBody(circleOfRadius: pin.size.width / 3.0)
-        hall4.physicsBody?.isDynamic = false
-        hall4.physicsBody?.categoryBitMask = hall5Category
-        hall4.physicsBody?.contactTestBitMask = ballCategory
-        
         hall3 = SKSpriteNode(texture: hall15Texture)
         hall3.size = CGSize(width: ball.size.width * 1.1, height: ball.size.height * 1.1)
-        hall3.position = CGPoint(x: self.frame.size.width / 1.5, y: self.frame.size.height / 2 - hall2.size.height)
+        hall3.position = CGPoint(x: self.frame.size.width * 0.5, y: self.frame.size.height / 2 - hall2.size.height)
+        hall3.zPosition = 100
         hall3.name = "hall15"
-        
         //物理演算プロパティ
-        hall3.physicsBody = SKPhysicsBody(circleOfRadius: pin.size.width / 3.0)
+        hall3.physicsBody = SKPhysicsBody(circleOfRadius: 1)
         hall3.physicsBody?.isDynamic = false
         hall3.physicsBody?.categoryBitMask = hall15Category
         hall3.physicsBody?.contactTestBitMask = ballCategory
         
+        hall4 = SKSpriteNode(texture: hallTexture)
+        hall4.size = CGSize(width: ball.size.width * 1.1, height: ball.size.height * 1.1)
+        hall4.position = CGPoint(x: self.frame.size.width * 0.25, y: hall.position.y)
+        hall4.zPosition = 100
+        hall4.name = "hall5"
+        //物理演算プロパティ
+        hall4.physicsBody = SKPhysicsBody(circleOfRadius: 1)
+        hall4.physicsBody?.isDynamic = false
+        hall4.physicsBody?.categoryBitMask = hall5Category
+        hall4.physicsBody?.contactTestBitMask = ballCategory
+        
+        hall5 = SKSpriteNode(texture: hall10Texture)
+        hall5.size = CGSize(width: ball.size.width * 1.1, height: ball.size.height * 1.1)
+        hall5.position = CGPoint(x: self.frame.size.width * 0.33, y: self.frame.height * 0.55)
+        hall5.zPosition = 100
+        hall5.name = "hall10"
+        //物理演算プロパティ
+        hall5.physicsBody = SKPhysicsBody(circleOfRadius: 1)
+        hall5.physicsBody?.isDynamic = false
+        hall5.physicsBody?.categoryBitMask = hall10Category
+        hall5.physicsBody?.contactTestBitMask = ballCategory
+        
+        hall6 = SKSpriteNode(texture: hall10Texture)
+        hall6.size = CGSize(width: ball.size.width * 1.1, height: ball.size.height * 1.1)
+        hall6.position = CGPoint(x: self.frame.size.width * 0.66, y: self.frame.height * 0.55)
+        hall6.zPosition = 100
+        hall6.name = "hall10"
+        //物理演算プロパティ
+        hall6.physicsBody = SKPhysicsBody(circleOfRadius: 1)
+        hall6.physicsBody?.isDynamic = false
+        hall6.physicsBody?.categoryBitMask = hall10Category
+        hall6.physicsBody?.contactTestBitMask = ballCategory
+        
+        hall7 = SKSpriteNode(texture: hallTexture)
+        hall7.size = CGSize(width: ball.size.width * 1.1, height: ball.size.height * 1.1)
+        hall7.position = CGPoint(x: self.frame.size.width * 0.3, y: self.frame.size.height * 0.3)
+        hall7.zPosition = 100
+        hall7.name = "hall5"
+        //物理演算プロパティ
+        hall7.physicsBody = SKPhysicsBody(circleOfRadius: 1)
+        hall7.physicsBody?.isDynamic = false
+        hall7.physicsBody?.categoryBitMask = hall5Category
+        hall7.physicsBody?.contactTestBitMask = ballCategory
+        
+        hall8 = SKSpriteNode(texture: hallTexture)
+        hall8.size = CGSize(width: ball.size.width * 1.1, height: ball.size.height * 1.1)
+        hall8.position = CGPoint(x: self.frame.size.width * 0.7, y: self.frame.size.height * 0.3)
+        hall8.zPosition = 100
+        hall8.name = "hall5"
+        //物理演算プロパティ
+        hall8.physicsBody = SKPhysicsBody(circleOfRadius: 1)
+        hall8.physicsBody?.isDynamic = false
+        hall8.physicsBody?.categoryBitMask = hall5Category
+        hall8.physicsBody?.contactTestBitMask = ballCategory
+        
+        addChild(hall8)
+        addChild(hall7)
+        addChild(hall6)
+        addChild(hall5)
         addChild(hall4)
         addChild(hall3)
         addChild(hall2)
