@@ -117,6 +117,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var hall6:SKSpriteNode!
     var hall7:SKSpriteNode!
     var hall8:SKSpriteNode!
+    var bonusA:SKSpriteNode!
+    var bonusB:SKSpriteNode!
     
     var launch:SKSpriteNode!      //発射台
     var out:SKNode!                 //発射台出口
@@ -416,6 +418,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 ballcount -= 1
                 ballcountnode.text = String("×\(ballcount)")
                 print("玉\(ballcount)個")
+                
+                if contact.bodyB.node?.name == "bonus"{ //bonus穴の場合は穴を消す、そうでない場合はbonus穴発生
+                    contact.bodyB.node?.removeFromParent()
+                }else{
+                    setbonus()
+                }
+                
                 count += 15
                 timer = Timer.scheduledTimer(withTimeInterval: ballInterbal, repeats: true, block: { (timer) in
                     
@@ -437,6 +446,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 ballcount -= 1
                 ballcountnode.text = String("×\(ballcount)")
                 print("玉\(ballcount)個")
+                
+                if contact.bodyA.node?.name == "bonus"{ //bonus穴の場合は穴を消す、そうでない場合はbonus穴発生
+                    contact.bodyA.node?.removeFromParent()
+                }else{
+                    setbonus()
+                }
+                
                 count += 15
                 timer = Timer.scheduledTimer(withTimeInterval: ballInterbal, repeats: true, block: { (timer) in
                     
@@ -1714,5 +1730,35 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         ballcountnode.horizontalAlignmentMode = SKLabelHorizontalAlignmentMode.left
         ballcountnode.text = "×\(ballcount)"
         addChild(ballcountnode)
+    }
+    
+    func setbonus(){
+        let hall15Texture = SKTexture(imageNamed: "hall15")
+        hall15Texture.filteringMode = SKTextureFilteringMode.linear
+        
+        bonusA = SKSpriteNode(texture: hall15Texture)
+        bonusA.size = CGSize(width: ball.size.width * 1.1, height: ball.size.height * 1.1)
+        bonusA.position = CGPoint(x: self.frame.size.width * 0.6, y: pin.position.y)
+        bonusA.zPosition = 100
+        bonusA.name = "bonus"
+        //物理演算プロパティ
+        bonusA.physicsBody = SKPhysicsBody(circleOfRadius: 1)
+        bonusA.physicsBody?.isDynamic = false
+        bonusA.physicsBody?.categoryBitMask = hall15Category
+        bonusA.physicsBody?.contactTestBitMask = ballCategory
+        
+        bonusB = SKSpriteNode(texture: hall15Texture)
+        bonusB.size = CGSize(width: ball.size.width * 1.1, height: ball.size.height * 1.1)
+        bonusB.position = CGPoint(x: self.frame.size.width * 0.4, y: pin.position.y)
+        bonusB.zPosition = 100
+        bonusB.name = "bonus"
+        //物理演算プロパティ
+        bonusB.physicsBody = SKPhysicsBody(circleOfRadius: 1)
+        bonusB.physicsBody?.isDynamic = false
+        bonusB.physicsBody?.categoryBitMask = hall15Category
+        bonusB.physicsBody?.contactTestBitMask = ballCategory
+        
+        addChild(bonusA)
+        addChild(bonusB)
     }
 }
