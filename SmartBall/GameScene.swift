@@ -26,6 +26,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var wall3:SKSpriteNode! //左の壁
     var wall4:SKSpriteNode! //下の壁(下側)
     var ball:SKSpriteNode!
+    var pin0:SKSpriteNode!
     var pin:SKSpriteNode!
     var pin2:SKSpriteNode!
     var pin3:SKSpriteNode!
@@ -561,7 +562,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         wall3.name = "wall_3"
         
         //物理演算プロパティ
-        wall3.physicsBody = SKPhysicsBody(rectangleOf: wall.size)
+        wall3.physicsBody = SKPhysicsBody(rectangleOf: wall3.size)
         wall3.physicsBody?.isDynamic = false
         wall3.physicsBody?.friction = 0.0    //摩擦係数
         wall3.physicsBody?.restitution = 0.1 //反発係数
@@ -586,7 +587,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         loopTexture.filteringMode = SKTextureFilteringMode.linear
         
         loop = SKSpriteNode(texture: loopTexture)
-        loop.size = CGSize(width: self.frame.size.width, height: self.frame.size.height / 5.0)
+        loop.size = CGSize(width: self.frame.size.width, height: self.frame.size.height / 4.5)
         loop.position = CGPoint(x: self.frame.size.width / 2.0, y: self.frame.size.height - loop.size.height / 2)
         loop.name = "loop"
         //物理演算プロパティ
@@ -640,7 +641,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         ballTexture.filteringMode = SKTextureFilteringMode.linear
         
         ball = SKSpriteNode(texture: ballTexture)
-        ball.size = CGSize(width: ballTexture.size().width * 1.5, height: ballTexture.size().height * 1.5)
+        ball.size = CGSize(width: ballTexture.size().width * 1.1, height: ballTexture.size().height * 1.1)
         ball.position = CGPoint(x: ball.size.width / 2, y: self.frame.size.height / 1.5)
         ball.name = "star"
         
@@ -666,7 +667,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         pinTexture.filteringMode = SKTextureFilteringMode.linear
         
         pin = SKSpriteNode(texture: pinTexture)
-        pin.position = CGPoint(x: ball.size.width / 1.5, y: self.frame.size.height * 0.8)
+        pin.position = CGPoint(x: self.frame.size.width - ball.size.width * 1.5, y: self.frame.size.height * 0.8)
         pin.name = "pin_1"
         //物理演算プロパティ
         pin.physicsBody = SKPhysicsBody(circleOfRadius: pin.size.width / 3.0)
@@ -674,6 +675,16 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         pin.physicsBody?.friction = 0.0    //摩擦係数
         pin.physicsBody?.restitution = 0.7 //反発係数
         pin.zPosition = 150
+        
+        pin0 = SKSpriteNode(texture: pinTexture)
+        pin0.position = CGPoint(x: ball.size.width * 0.6, y: self.frame.size.height * 0.8 - pin.size.height)
+        pin0.name = "pin_0"
+        //物理演算プロパティ
+        pin0.physicsBody = SKPhysicsBody(circleOfRadius: pin.size.width / 3.0)
+        pin0.physicsBody?.isDynamic = false
+        pin0.physicsBody?.friction = 0.5    //摩擦係数
+        pin0.physicsBody?.restitution = 0.7 //反発係数
+        pin0.zPosition = 150
         
         pin2 = SKSpriteNode(texture: pinTexture)
         pin2.name = "pin_2"
@@ -1458,6 +1469,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         pin79.position = CGPoint(x: self.frame.size.width * 0.5, y: self.frame.size.height * 0.3)
         
         addChild(pin)
+        addChild(pin0)
         addChild(pin2)
         addChild(pin3)
         addChild(pin4)
@@ -1576,10 +1588,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         let joint = SKPhysicsJointSpring.joint(withBodyA: cue.physicsBody!, bodyB: cue_joint.physicsBody!, anchorA: cue.position, anchorB: cue_joint.position)
         
         //伸縮の周期を設定する
-        joint.frequency = 7.0
+        joint.frequency = 5.0
         
         //伸縮の減衰を設定する
-        joint.damping = 0.8
+        joint.damping = 0.5
         
         
         addChild(cue_joint)

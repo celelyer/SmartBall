@@ -23,6 +23,9 @@ class ViewController: UIViewController {
         // ノードの数を表示する
         skView.showsNodeCount = false
         
+        //ノードのphysicsbodyを表示する
+        skView.showsPhysics = true
+        
         // ビューと同じサイズでシーンを作成する
         let scene = GameScene(size:skView.frame.size)
         
