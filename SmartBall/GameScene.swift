@@ -137,7 +137,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     let hall15Category: UInt32 = 1 << 6
     let hall10Category: UInt32 = 1 << 7
     
-
+    //パーティクルを作成する。
+    let particle = SKEmitterNode(fileNamed: "Particle.sks")
     
     // SKView上にシーンが表示されたときに呼ばれるメソッド
     override func didMove(to view: SKView) {
@@ -301,7 +302,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     //画面をタップした時に呼ばれる
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        
+        let location = touches.first!.location(in: self)
+        particle!.position = location
+        addChild(particle!)
         //キューを一度isDynamic = false にして引っ張りやすくする
         if cue.physicsBody?.isDynamic == true {
             cue.physicsBody?.isDynamic = false
@@ -322,6 +325,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
         //タッチした座標を取得する
         let location = touches.first!.location(in: self)
+        particle?.particlePosition = CGPoint(x: -particle!.position.x + location.x, y: -particle!.position.y + location.y)
         
         if cue.size.height * 1.3 >= (tap_point.y - location.y) / 3{
             //スライドに合わせて移動する
@@ -334,6 +338,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     //タッチを離した時のメソッド
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
         cue.physicsBody?.isDynamic = true
+        SKAction.wait(forDuration: 0.3)
+        particle?.removeFromParent()
         //cue.physicsBody?.applyForce(CGVector(dx: 0.0, dy: 20.0))
     }
     
