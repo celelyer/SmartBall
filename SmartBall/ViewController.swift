@@ -18,16 +18,19 @@ class ViewController: UIViewController {
         let skView = self.view as! SKView
         
         // FPSを表示する
-        skView.showsFPS = false
+        skView.showsFPS = true
         
         // ノードの数を表示する
-        skView.showsNodeCount = false
+        skView.showsNodeCount = true
         
         //ノードのphysicsbodyを表示する
         skView.showsPhysics = true
         
+        //重力の方向・強さを表示する
+        skView.showsFields = true
+        
         // ビューと同じサイズでシーンを作成する
-        let scene = GameScene(size:skView.frame.size)
+        let scene = MenuScene(size:skView.frame.size)
         
         // ビューにシーンを表示する
         skView.presentScene(scene)
